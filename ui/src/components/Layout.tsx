@@ -6,7 +6,10 @@ import {
   ListOrdered,
   AlertTriangle,
   Wifi,
-  WifiOff
+  WifiOff,
+  FlaskConical,
+  ToggleLeft,
+  ToggleRight
 } from 'lucide-react'
 import { useMegazord } from '../hooks/useMegazord'
 
@@ -20,7 +23,7 @@ const navItems = [
 
 export default function Layout() {
   const location = useLocation()
-  const { connected, stats, alarms } = useMegazord()
+  const { connected, stats, alarms, demoMode, toggleDemoMode } = useMegazord()
 
   const activeAlarms = alarms.filter(a => a.active).length
 
@@ -69,6 +72,36 @@ export default function Layout() {
           </ul>
         </nav>
 
+        {/* Demo Mode Toggle */}
+        <div className="p-4 border-t border-surface-light">
+          <button
+            onClick={toggleDemoMode}
+            className={`
+              w-full flex items-center justify-between px-3 py-2 rounded-lg
+              transition-colors text-sm
+              ${demoMode
+                ? 'bg-warning/20 text-warning border border-warning/30'
+                : 'bg-surface-light text-gray-400 hover:text-white'
+              }
+            `}
+          >
+            <div className="flex items-center gap-2">
+              <FlaskConical size={16} />
+              <span>Demo Mode</span>
+            </div>
+            {demoMode ? (
+              <ToggleRight size={20} className="text-warning" />
+            ) : (
+              <ToggleLeft size={20} />
+            )}
+          </button>
+          {demoMode && (
+            <p className="text-xs text-warning/70 mt-2 px-1">
+              Showing simulated data
+            </p>
+          )}
+        </div>
+
         {/* Connection Status */}
         <div className="p-4 border-t border-surface-light">
           <div className="flex items-center gap-2 text-sm">
@@ -76,6 +109,11 @@ export default function Layout() {
               <>
                 <Wifi size={16} className="text-success" />
                 <span className="text-success">Connected</span>
+              </>
+            ) : demoMode ? (
+              <>
+                <FlaskConical size={16} className="text-warning" />
+                <span className="text-warning">Demo Active</span>
               </>
             ) : (
               <>
