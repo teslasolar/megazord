@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Start - Megazord</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-surface: #12121a;
+            --bg-surface-light: #1a1a25;
+            --accent: #00d4ff;
+            --success: #00ff88;
+            --warning: #ffaa00;
+            --error: #ff4466;
+            --text: #ffffff;
+            --text-dim: #888899;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.875rem;
+            margin-bottom: 2rem;
+        }
+        .back-link:hover { color: var(--accent); }
+        h1 {
+            color: var(--accent);
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--bg-surface-light);
+        }
+        h2 {
+            color: var(--text);
+            font-size: 1.75rem;
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--bg-surface-light);
+        }
+        h3 {
+            color: var(--text);
+            font-size: 1.25rem;
+            margin: 1.5rem 0 0.75rem;
+        }
+        p { margin-bottom: 1rem; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        code {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            background: var(--bg-surface);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--accent);
+        }
+        pre {
+            background: var(--bg-surface);
+            padding: 1.25rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid var(--bg-surface-light);
+        }
+        pre code {
+            background: none;
+            padding: 0;
+            color: var(--text);
+        }
+        ul, ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        li { margin-bottom: 0.5rem; }
+        .nav-footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-surface-light);
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--bg-surface-light);
+            border-radius: 8px;
+            color: var(--text);
+            text-decoration: none;
+        }
+        .nav-btn:hover {
+            background: var(--bg-surface-light);
+            border-color: var(--accent);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../../" class="back-link">← Back to Docs</a>
+
+        <h1>Quick Start Guide</h1>
+        <p>Get Megazord up and running in minutes.</p>
+
+        <h2 id="prerequisites">Prerequisites</h2>
+        <ul>
+            <li>Python 3.10+</li>
+            <li>NVIDIA GPU(s) with CUDA support</li>
+            <li><code>pynvml</code> compatible drivers</li>
+        </ul>
+
+        <h2 id="installation">Installation</h2>
+        <pre><code># Install from PyPI
+pip install megazord
+
+# Or install from source
+git clone https://github.com/teslasolar/megazord
+cd megazord
+pip install -e ".[dev]"</code></pre>
+
+        <h2 id="initialize">Initialize</h2>
+        <pre><code># Create database and scan GPUs
+megazord init</code></pre>
+        <p>This will:</p>
+        <ol>
+            <li>Create <code>~/.megazord/state.db</code></li>
+            <li>Detect all available NVIDIA GPUs</li>
+            <li>Register them with the system</li>
+        </ol>
+
+        <h2 id="register-a-model">Register a Model</h2>
+        <pre><code># Register a model with VRAM requirements
+megazord model add llama-70b 48000 --shard
+
+# Check registered models
+megazord model ls</code></pre>
+        <p>Parameters:</p>
+        <ul>
+            <li><code>name</code>: Model identifier</li>
+            <li><code>vram</code>: Required VRAM in MB</li>
+            <li><code>--shard</code>: Allow splitting across GPUs</li>
+        </ul>
+
+        <h2 id="load-model">Load Model</h2>
+        <pre><code># Auto-select best GPU(s)
+megazord model load llama-70b
+
+# Or specify GPUs
+megazord model load llama-70b --gpu 0 --gpu 1</code></pre>
+
+        <h2 id="start-server">Start Server</h2>
+        <pre><code># Start on default port 8420
+megazord serve
+
+# Custom port
+megazord serve --port 9000</code></pre>
+
+        <h2 id="make-requests">Make Requests</h2>
+
+        <h3>Using curl</h3>
+        <pre><code># Text completion
+curl http://localhost:8420/v1/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "llama-70b",
+    "prompt": "Hello, world!",
+    "max_tokens": 100
+  }'
+
+# Chat completion
+curl http://localhost:8420/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "llama-70b",
+    "messages": [
+      {"role": "user", "content": "Hello!"}
+    ]
+  }'</code></pre>
+
+        <h3>Using Python</h3>
+        <pre><code>import httpx
+
+client = httpx.Client(base_url="http://localhost:8420")
+
+response = client.post("/v1/completions", json={
+    "model": "llama-70b",
+    "prompt": "Hello, world!",
+    "max_tokens": 100
+})
+
+print(response.json()["choices"][0]["text"])</code></pre>
+
+        <h3>Using OpenAI SDK</h3>
+        <pre><code>from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://localhost:8420/v1",
+    api_key="not-needed"
+)
+
+response = client.chat.completions.create(
+    model="llama-70b",
+    messages=[{"role": "user", "content": "Hello!"}]
+)
+
+print(response.choices[0].message.content)</code></pre>
+
+        <h2 id="monitor-status">Monitor Status</h2>
+        <pre><code># Check cluster status
+megazord status
+
+# View in browser
+open http://localhost:8420</code></pre>
+
+        <h2 id="next-steps">Next Steps</h2>
+        <ul>
+            <li><a href="../configuration/">Configuration Reference</a></li>
+            <li><a href="../../api/playground/">API Playground</a></li>
+            <li><a href="../architecture/">Architecture Overview</a></li>
+        </ul>
+
+        <div class="nav-footer">
+            <a href="../../" class="nav-btn">← Docs Home</a>
+            <a href="../../../" class="nav-btn">Main Site →</a>
+        </div>
+    </div>
+</body>
+</html>

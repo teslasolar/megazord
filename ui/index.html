@@ -1,13 +1,725 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Megazord Dashboard</title>
-  </head>
-  <body class="bg-dark text-white">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-surface: #12121a;
+            --bg-surface-light: #1a1a25;
+            --accent: #00d4ff;
+            --success: #00ff88;
+            --warning: #ffaa00;
+            --error: #ff4466;
+            --text: #ffffff;
+            --text-dim: #888899;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: var(--bg-surface);
+            border-right: 1px solid var(--bg-surface-light);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--bg-surface-light);
+        }
+
+        .logo h1 {
+            font-size: 1.25rem;
+            color: var(--accent);
+        }
+
+        .logo p {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+
+        nav {
+            flex: 1;
+            padding: 1rem;
+        }
+
+        nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-bottom: 0.25rem;
+        }
+
+        nav a:hover, nav a.active {
+            background: var(--bg-surface-light);
+            color: var(--text);
+        }
+
+        nav a.active {
+            background: rgba(0, 212, 255, 0.15);
+            color: var(--accent);
+        }
+
+        .nav-icon { width: 20px; text-align: center; }
+
+        /* Demo Toggle */
+        .demo-toggle {
+            padding: 1rem;
+            border-top: 1px solid var(--bg-surface-light);
+        }
+
+        .demo-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 0.75rem;
+            background: var(--bg-surface-light);
+            border: none;
+            border-radius: 0.5rem;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .demo-btn.active {
+            background: rgba(255, 170, 0, 0.15);
+            color: var(--warning);
+            border: 1px solid rgba(255, 170, 0, 0.3);
+        }
+
+        .demo-hint {
+            font-size: 0.7rem;
+            color: rgba(255, 170, 0, 0.7);
+            padding: 0.5rem 0.25rem 0;
+        }
+
+        /* Status */
+        .status-bar {
+            padding: 1rem;
+            border-top: 1px solid var(--bg-surface-light);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--warning);
+        }
+
+        .status-dot.connected { background: var(--success); }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 1.5rem;
+            overflow: auto;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-surface);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            border: 1px solid var(--bg-surface-light);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-top: 0.25rem;
+        }
+
+        .stat-value.accent { color: var(--accent); }
+        .stat-value.success { color: var(--success); }
+        .stat-value.warning { color: var(--warning); }
+
+        /* GPU Grid */
+        .gpu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .gpu-card {
+            background: var(--bg-surface);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            border: 1px solid var(--bg-surface-light);
+        }
+
+        .gpu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .gpu-name {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .gpu-state {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            text-transform: uppercase;
+        }
+
+        .gpu-state.ready { background: rgba(0, 255, 136, 0.15); color: var(--success); }
+        .gpu-state.busy { background: rgba(0, 212, 255, 0.15); color: var(--accent); }
+        .gpu-state.throttle { background: rgba(255, 170, 0, 0.15); color: var(--warning); }
+
+        .gpu-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .gpu-stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gpu-stat-label {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+        }
+
+        .gpu-stat-value {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* Progress bars */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-surface-light);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        .progress-fill.low { background: var(--success); }
+        .progress-fill.medium { background: var(--warning); }
+        .progress-fill.high { background: var(--error); }
+
+        /* Models Table */
+        .models-table {
+            width: 100%;
+            background: var(--bg-surface);
+            border-radius: 0.75rem;
+            border: 1px solid var(--bg-surface-light);
+            overflow: hidden;
+        }
+
+        .models-table th, .models-table td {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--bg-surface-light);
+        }
+
+        .models-table th {
+            background: var(--bg-surface-light);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+
+        .models-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .model-hash {
+            font-family: 'SF Mono', monospace;
+            color: var(--accent);
+        }
+
+        /* Back link */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .back-link:hover { color: var(--accent); }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--bg-surface-light);
+            padding-bottom: 0.5rem;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.875rem;
+            border-radius: 0.5rem 0.5rem 0 0;
+            transition: all 0.2s;
+        }
+
+        .tab:hover { color: var(--text); }
+        .tab.active { color: var(--accent); background: var(--bg-surface-light); }
+
+        /* Views */
+        .view { display: none; }
+        .view.active { display: block; }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="logo">
+            <h1>Megazord</h1>
+            <p>LLM Cluster Dashboard</p>
+        </div>
+
+        <nav>
+            <a href="#overview" class="active" data-view="overview">
+                <span class="nav-icon">📊</span>
+                <span>Overview</span>
+            </a>
+            <a href="#gpus" data-view="gpus">
+                <span class="nav-icon">🖥️</span>
+                <span>GPUs</span>
+            </a>
+            <a href="#models" data-view="models">
+                <span class="nav-icon">📦</span>
+                <span>Models</span>
+            </a>
+            <a href="#queue" data-view="queue">
+                <span class="nav-icon">📋</span>
+                <span>Queue</span>
+            </a>
+            <a href="#alarms" data-view="alarms">
+                <span class="nav-icon">⚠️</span>
+                <span>Alarms</span>
+                <span id="alarm-badge" style="display:none;margin-left:auto;background:var(--error);color:white;font-size:0.7rem;padding:0.125rem 0.375rem;border-radius:999px;">0</span>
+            </a>
+        </nav>
+
+        <div class="demo-toggle">
+            <button class="demo-btn active" id="demo-toggle">
+                <span>🧪 Demo Mode</span>
+                <span id="toggle-icon">ON</span>
+            </button>
+            <p class="demo-hint" id="demo-hint">Showing simulated data</p>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-indicator">
+                <span class="status-dot" id="status-dot"></span>
+                <span id="status-text">Demo Active</span>
+            </div>
+            <p style="font-size:0.7rem;color:var(--text-dim);margin-top:0.25rem;" id="uptime">Uptime: 0h 0m</p>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main>
+        <a href="../index.html" class="back-link">← Back to Home</a>
+
+        <!-- Overview View -->
+        <div id="view-overview" class="view active">
+            <h1 class="page-title">📊 Cluster Overview</h1>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total GPUs</div>
+                    <div class="stat-value accent" id="stat-gpus">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Loaded Models</div>
+                    <div class="stat-value success" id="stat-models">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Queue Depth</div>
+                    <div class="stat-value warning" id="stat-queue">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Active Alarms</div>
+                    <div class="stat-value" id="stat-alarms" style="color:var(--error)">0</div>
+                </div>
+            </div>
+
+            <h2 style="margin-bottom:1rem;">GPU Status</h2>
+            <div class="gpu-grid" id="gpu-grid"></div>
+        </div>
+
+        <!-- GPUs View -->
+        <div id="view-gpus" class="view">
+            <h1 class="page-title">🖥️ GPU Management</h1>
+            <div class="gpu-grid" id="gpu-detail-grid"></div>
+        </div>
+
+        <!-- Models View -->
+        <div id="view-models" class="view">
+            <h1 class="page-title">📦 Loaded Models</h1>
+            <table class="models-table">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Hash</th>
+                        <th>VRAM</th>
+                        <th>GPUs</th>
+                        <th>Requests</th>
+                    </tr>
+                </thead>
+                <tbody id="models-body"></tbody>
+            </table>
+        </div>
+
+        <!-- Queue View -->
+        <div id="view-queue" class="view">
+            <h1 class="page-title">📋 Request Queue</h1>
+            <table class="models-table">
+                <thead>
+                    <tr>
+                        <th>Request ID</th>
+                        <th>Model</th>
+                        <th>State</th>
+                        <th>Priority</th>
+                        <th>Queued</th>
+                    </tr>
+                </thead>
+                <tbody id="queue-body"></tbody>
+            </table>
+        </div>
+
+        <!-- Alarms View -->
+        <div id="view-alarms" class="view">
+            <h1 class="page-title">⚠️ Active Alarms</h1>
+            <div class="tabs">
+                <button class="tab active" data-filter="active">Active</button>
+                <button class="tab" data-filter="all">All</button>
+            </div>
+            <table class="models-table">
+                <thead>
+                    <tr>
+                        <th>Class</th>
+                        <th>Source</th>
+                        <th>Message</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="alarms-body"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        // Demo data generators
+        function generateDemoData() {
+            const gpuNames = [
+                'NVIDIA RTX 4090', 'NVIDIA RTX 4080', 'NVIDIA RTX 3090',
+                'NVIDIA A100', 'NVIDIA A6000', 'NVIDIA RTX 4070 Ti'
+            ];
+            const states = ['READY', 'BUSY', 'READY', 'BUSY', 'READY', 'THROTTLE'];
+            const models = [
+                { name: 'llama-3-70b', vram: 42000 },
+                { name: 'mistral-7b', vram: 8000 },
+                { name: 'codellama-34b', vram: 20000 },
+                { name: 'phi-3-mini', vram: 4000 }
+            ];
+
+            const numGpus = 4 + Math.floor(Math.random() * 4);
+            const gpus = [];
+
+            for (let i = 0; i < numGpus; i++) {
+                const vramTotal = 24000 + Math.floor(Math.random() * 4) * 24000;
+                gpus.push({
+                    h: 'gpu' + String(i).padStart(2, '0') + 'xx',
+                    idx: i,
+                    name: gpuNames[i % gpuNames.length],
+                    state: states[i % states.length],
+                    temp: 45 + Math.floor(Math.random() * 30),
+                    pwr: 150 + Math.floor(Math.random() * 200),
+                    pwr_cap: 450,
+                    vram_used: Math.floor(Math.random() * vramTotal * 0.8),
+                    vram_total: vramTotal,
+                    util: Math.floor(Math.random() * 100),
+                    models: i < 3 ? [models[i % models.length].name] : []
+                });
+            }
+
+            const loadedModels = models.slice(0, 3).map((m, i) => ({
+                m: m.name,
+                h: 'mdl' + String(i).padStart(2, '0') + 'yy',
+                vram: m.vram,
+                gpus: [gpus[i % gpus.length].h],
+                req_cnt: Math.floor(Math.random() * 1000)
+            }));
+
+            const queue = Array.from({ length: 5 }, (_, i) => ({
+                h: 'req' + String(i).padStart(2, '0') + 'zz',
+                model: models[i % models.length].name,
+                state: i === 0 ? 'PROCESSING' : 'QUEUED',
+                priority: i,
+                queued_at: new Date(Date.now() - i * 30000).toISOString()
+            }));
+
+            const alarms = [
+                { class: 'WARNING', source: gpus[0]?.h || 'gpu00', msg: 'Temperature approaching threshold (78°C)', ts: new Date(Date.now() - 300000).toISOString(), active: true },
+                { class: 'INFO', source: 'router', msg: 'Model llama-3-70b loaded on gpu00', ts: new Date(Date.now() - 600000).toISOString(), active: false }
+            ];
+
+            return {
+                gpus,
+                models: loadedModels,
+                queue,
+                alarms,
+                stats: {
+                    gpu_count: gpus.length,
+                    model_count: loadedModels.length,
+                    queue_depth: queue.length,
+                    active_alarms: alarms.filter(a => a.active).length,
+                    uptime_sec: 3600 + Math.floor(Math.random() * 86400)
+                }
+            };
+        }
+
+        // State
+        let demoMode = true;
+        let currentView = 'overview';
+        let data = generateDemoData();
+
+        // Navigation
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const view = link.dataset.view;
+                document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+                document.getElementById('view-' + view).classList.add('active');
+                currentView = view;
+            });
+        });
+
+        // Demo toggle
+        document.getElementById('demo-toggle').addEventListener('click', () => {
+            demoMode = !demoMode;
+            updateDemoUI();
+            if (demoMode) {
+                data = generateDemoData();
+                render();
+            }
+        });
+
+        function updateDemoUI() {
+            const btn = document.getElementById('demo-toggle');
+            const icon = document.getElementById('toggle-icon');
+            const hint = document.getElementById('demo-hint');
+
+            if (demoMode) {
+                btn.classList.add('active');
+                icon.textContent = 'ON';
+                hint.style.display = 'block';
+            } else {
+                btn.classList.remove('active');
+                icon.textContent = 'OFF';
+                hint.style.display = 'none';
+            }
+        }
+
+        // Render functions
+        function getProgressClass(percent) {
+            if (percent < 50) return 'low';
+            if (percent < 80) return 'medium';
+            return 'high';
+        }
+
+        function formatUptime(seconds) {
+            const days = Math.floor(seconds / 86400);
+            const hours = Math.floor((seconds % 86400) / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            if (days > 0) return `${days}d ${hours}h`;
+            if (hours > 0) return `${hours}h ${minutes}m`;
+            return `${minutes}m`;
+        }
+
+        function renderGpuCard(gpu) {
+            const tempPct = (gpu.temp / 90) * 100;
+            const vramPct = (gpu.vram_used / gpu.vram_total) * 100;
+            const stateClass = gpu.state.toLowerCase();
+
+            return `
+                <div class="gpu-card">
+                    <div class="gpu-header">
+                        <span class="gpu-name">${gpu.name}</span>
+                        <span class="gpu-state ${stateClass}">${gpu.state}</span>
+                    </div>
+                    <div class="gpu-stats">
+                        <div class="gpu-stat">
+                            <span class="gpu-stat-label">Temperature</span>
+                            <span class="gpu-stat-value">${gpu.temp}°C</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill ${getProgressClass(tempPct)}" style="width:${tempPct}%"></div>
+                            </div>
+                        </div>
+                        <div class="gpu-stat">
+                            <span class="gpu-stat-label">VRAM</span>
+                            <span class="gpu-stat-value">${(gpu.vram_used/1000).toFixed(1)}/${(gpu.vram_total/1000).toFixed(0)} GB</span>
+                            <div class="progress-bar">
+                                <div class="progress-fill ${getProgressClass(vramPct)}" style="width:${vramPct}%"></div>
+                            </div>
+                        </div>
+                        <div class="gpu-stat">
+                            <span class="gpu-stat-label">Power</span>
+                            <span class="gpu-stat-value">${gpu.pwr}W / ${gpu.pwr_cap}W</span>
+                        </div>
+                        <div class="gpu-stat">
+                            <span class="gpu-stat-label">Utilization</span>
+                            <span class="gpu-stat-value">${gpu.util}%</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function render() {
+            // Stats
+            document.getElementById('stat-gpus').textContent = data.stats.gpu_count;
+            document.getElementById('stat-models').textContent = data.stats.model_count;
+            document.getElementById('stat-queue').textContent = data.stats.queue_depth;
+            document.getElementById('stat-alarms').textContent = data.stats.active_alarms;
+            document.getElementById('uptime').textContent = 'Uptime: ' + formatUptime(data.stats.uptime_sec);
+
+            // Alarm badge
+            const badge = document.getElementById('alarm-badge');
+            if (data.stats.active_alarms > 0) {
+                badge.style.display = 'block';
+                badge.textContent = data.stats.active_alarms;
+            } else {
+                badge.style.display = 'none';
+            }
+
+            // GPU grids
+            const gpuHtml = data.gpus.map(renderGpuCard).join('');
+            document.getElementById('gpu-grid').innerHTML = gpuHtml;
+            document.getElementById('gpu-detail-grid').innerHTML = gpuHtml;
+
+            // Models table
+            document.getElementById('models-body').innerHTML = data.models.map(m => `
+                <tr>
+                    <td>${m.m}</td>
+                    <td class="model-hash">${m.h}</td>
+                    <td>${(m.vram/1000).toFixed(1)} GB</td>
+                    <td>${m.gpus.length}</td>
+                    <td>${m.req_cnt.toLocaleString()}</td>
+                </tr>
+            `).join('');
+
+            // Queue table
+            document.getElementById('queue-body').innerHTML = data.queue.map(r => `
+                <tr>
+                    <td class="model-hash">${r.h}</td>
+                    <td>${r.model}</td>
+                    <td><span class="gpu-state ${r.state === 'PROCESSING' ? 'busy' : 'ready'}">${r.state}</span></td>
+                    <td>${r.priority}</td>
+                    <td>${new Date(r.queued_at).toLocaleTimeString()}</td>
+                </tr>
+            `).join('');
+
+            // Alarms table
+            document.getElementById('alarms-body').innerHTML = data.alarms.map(a => `
+                <tr>
+                    <td><span class="gpu-state ${a.class === 'WARNING' ? 'throttle' : 'ready'}">${a.class}</span></td>
+                    <td class="model-hash">${a.source}</td>
+                    <td>${a.msg}</td>
+                    <td>${new Date(a.ts).toLocaleTimeString()}</td>
+                    <td>${a.active ? '🔴 Active' : '✅ Cleared'}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Initial render
+        render();
+
+        // Refresh demo data periodically
+        setInterval(() => {
+            if (demoMode) {
+                // Update some values slightly
+                data.gpus.forEach(gpu => {
+                    gpu.temp = Math.max(40, Math.min(85, gpu.temp + (Math.random() - 0.5) * 5));
+                    gpu.util = Math.max(0, Math.min(100, gpu.util + (Math.random() - 0.5) * 20));
+                    gpu.vram_used = Math.max(0, Math.min(gpu.vram_total, gpu.vram_used + (Math.random() - 0.5) * 1000));
+                });
+                data.stats.uptime_sec += 5;
+                render();
+            }
+        }, 5000);
+    </script>
+</body>
 </html>

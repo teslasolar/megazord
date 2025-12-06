@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture - Megazord</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-surface: #12121a;
+            --bg-surface-light: #1a1a25;
+            --accent: #00d4ff;
+            --success: #00ff88;
+            --warning: #ffaa00;
+            --error: #ff4466;
+            --text: #ffffff;
+            --text-dim: #888899;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-dim); text-decoration: none; font-size: 0.875rem; margin-bottom: 2rem; }
+        .back-link:hover { color: var(--accent); }
+        h1 { color: var(--accent); font-size: 2.5rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--bg-surface-light); }
+        h2 { color: var(--text); font-size: 1.75rem; margin: 2rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--bg-surface-light); }
+        h3 { color: var(--text); font-size: 1.25rem; margin: 1.5rem 0 0.75rem; }
+        h4 { color: var(--text-dim); font-size: 1rem; margin: 1.25rem 0 0.5rem; }
+        p { margin-bottom: 1rem; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        code { font-family: 'SF Mono', monospace; background: var(--bg-surface); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.9em; color: var(--accent); }
+        pre { background: var(--bg-surface); padding: 1.25rem; border-radius: 8px; overflow-x: auto; margin: 1rem 0; border: 1px solid var(--bg-surface-light); font-family: 'SF Mono', monospace; }
+        pre code { background: none; padding: 0; color: var(--text); }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; background: var(--bg-surface); border-radius: 8px; overflow: hidden; }
+        th, td { text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid var(--bg-surface-light); }
+        th { background: var(--bg-surface-light); font-weight: 600; color: var(--text-dim); text-transform: uppercase; font-size: 0.75rem; }
+        strong { color: var(--accent); }
+        .nav-footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--bg-surface-light); display: flex; justify-content: space-between; gap: 1rem; }
+        .nav-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--bg-surface); border: 1px solid var(--bg-surface-light); border-radius: 8px; color: var(--text); text-decoration: none; }
+        .nav-btn:hover { background: var(--bg-surface-light); border-color: var(--accent); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../../" class="back-link">← Back to Docs</a>
+
+        <h1>Architecture Overview</h1>
+        <p>Megazord follows ISA-88/95/101 standards for industrial automation systems.</p>
+
+        <h2>ISA-95 Physical Model</h2>
+        <pre><code>ENTERPRISE: LocalCompute
+└── SITE: HomeLab
+    └── AREA: GPUCluster
+        └── PROCESS CELL: Megazord
+            ├── UNIT: Inference (INF)
+            │   ├── EM: Router (RTR)
+            │   └── EM: Scheduler (SCH)
+            ├── UNIT: Models (MDL)
+            │   ├── EM: Loader (LDR)
+            │   └── EM: Sharder (SHR)
+            └── CONTROL MODULES:
+                └── GPU[0..N-1]</code></pre>
+
+        <h3>Levels</h3>
+        <table>
+            <thead>
+                <tr><th>Level</th><th>Name</th><th>Function</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>L0</td><td>Inference</td><td>Direct GPU operations</td></tr>
+                <tr><td>L1</td><td>Sensing</td><td>Temperature, VRAM, load monitoring</td></tr>
+                <tr><td>L2</td><td>Control</td><td>Router, scheduler, state machines</td></tr>
+                <tr><td>L3</td><td>MES</td><td>Request queue, batch records</td></tr>
+                <tr><td>L4</td><td>Business</td><td>API, dashboard, reporting</td></tr>
+            </tbody>
+        </table>
+
+        <h2>Core Components</h2>
+
+        <h3>Router (THE UNLOCK)</h3>
+        <p>The router implements the key insight: <strong>Cards ADD capacity, don't bottleneck on slowest</strong>.</p>
+        <pre><code>def route(self, model_h: str, prompt: str):
+    m = self.models[model_h]
+    avail = sorted([g for g in self.gpus if g.ok], key=lambda x: -x.speed)
+
+    # 1. Already loaded? Use it
+    if m.loaded:
+        return self._infer(m.on, prompt)
+
+    # 2. Single card fits? Use fastest
+    for g in avail:
+        if m.fits(g):
+            self._load(m, [g.h])
+            return self._infer([g.h], prompt)
+
+    # 3. Shard across multiple (ADDITIVE)
+    if m.shard:
+        sel, tot = [], 0
+        for g in avail:
+            sel.append(g.h)
+            tot += g.vram_avail
+            if tot >= m.vram:
+                self._load(m, sel)
+                return self._infer(sel, prompt)
+
+    # 4. Queue
+    return self._queue(model_h, prompt)</code></pre>
+
+        <h3>State Machines (PackML)</h3>
+
+        <h4>GPU States</h4>
+        <pre><code>     ┌────────────────────────────────┐
+     ▼                                │
+┌─────────┐  scan   ┌──────────┐     │
+│ OFFLINE │────────▶│ STARTING │     │
+└─────────┘         └────┬─────┘     │
+     ▲                   │ ready     │
+     │ error             ▼           │
+┌─────────┐ throt  ┌─────────┐      │
+│  ERROR  │◀───────│  READY  │──────┘ reset
+└─────────┘        └────┬────┘
+     ▲                  │ req
+     │ timeout          ▼
+     │             ┌────────┐
+     └─────────────│  BUSY  │
+                   └────────┘</code></pre>
+
+        <h4>Router States</h4>
+        <pre><code>┌────────┐ Start  ┌──────────┐
+│  IDLE  │───────▶│ STARTING │
+└────────┘        └────┬─────┘
+     ▲                 │ ready
+     │ Stop            ▼
+┌──────────┐      ┌─────────┐
+│ STOPPING │◀─────│ EXECUTE │⇄ HELD
+└──────────┘ Stop └─────────┘</code></pre>
+
+        <h3>Database Schema</h3>
+        <pre><code>-- GPU State
+CREATE TABLE gpu (
+    h       TEXT PRIMARY KEY,  -- 8-char hash
+    idx     INTEGER NOT NULL,  -- Device index
+    name    TEXT,
+    vram_t  INTEGER,           -- Total VRAM (MB)
+    vram_a  INTEGER,           -- Available VRAM (MB)
+    speed   REAL,              -- Tokens/sec
+    temp    INTEGER,           -- Temperature (°C)
+    load    REAL,              -- Load (0.0-1.0)
+    status  INTEGER,           -- State enum
+    t       INTEGER            -- Last update (unix)
+);
+
+-- Model Registry
+CREATE TABLE model (
+    h       TEXT PRIMARY KEY,
+    name    TEXT NOT NULL UNIQUE,
+    vram    INTEGER NOT NULL,
+    shard   INTEGER DEFAULT 1,
+    on_gpus TEXT DEFAULT '',   -- CSV of GPU hashes
+    refs    INTEGER DEFAULT 0
+);
+
+-- Request Log
+CREATE TABLE request (
+    h       TEXT PRIMARY KEY,
+    mdl_h   TEXT NOT NULL,
+    gpu_h   TEXT DEFAULT '',
+    tok_in  INTEGER,
+    tok_out INTEGER,
+    status  INTEGER,
+    t_start INTEGER,
+    t_end   INTEGER,
+    prio    INTEGER DEFAULT 1
+);
+
+-- Alarms
+CREATE TABLE alarm (
+    h        TEXT PRIMARY KEY,
+    tag      TEXT NOT NULL,
+    priority INTEGER,
+    message  TEXT,
+    t_raised INTEGER,
+    t_ack    INTEGER DEFAULT 0,
+    t_clear  INTEGER DEFAULT 0
+);</code></pre>
+
+        <h2>Data Flow</h2>
+        <pre><code>Request → API → Router → GPU Selection → Load Model → Inference → Response
+                  ↓
+              Queue (if busy)
+                  ↓
+              Monitor → Alarms</code></pre>
+
+        <h2>Hash Functions</h2>
+        <p>All entities use deterministic 8-character MD5 hashes:</p>
+        <pre><code>H = lambda x: hashlib.md5(f"gpu:{x}".encode()).hexdigest()[:8]
+M = lambda x: hashlib.md5(f"mdl:{x}".encode()).hexdigest()[:8]
+R = lambda x: hashlib.md5(f"req:{time.time()}:{x}".encode()).hexdigest()[:8]</code></pre>
+
+        <h2>Tag Naming Convention</h2>
+        <p>ISA-95 compliant tag structure:</p>
+        <pre><code>{AREA}_{UNIT}_{MODULE}_{DESC}_{SUFFIX}
+
+Examples:
+GPUCluster_INF_GPU00_Temp        → GPU 0 temperature
+GPUCluster_INF_RTR_Queue_Depth   → Router queue depth
+GPUCluster_MDL_LDR_Active        → Active model loads</code></pre>
+
+        <h2>Alarm System (ISA-18.2)</h2>
+        <table>
+            <thead>
+                <tr><th>Class</th><th>Priority</th><th>Color</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>CRIT</td><td>1</td><td style="color:var(--error)">Red</td><td>Auto-shutdown</td></tr>
+                <tr><td>HIGH</td><td>2</td><td style="color:orange">Orange</td><td>Alert + pause</td></tr>
+                <tr><td>MED</td><td>3</td><td style="color:var(--warning)">Yellow</td><td>Warning</td></tr>
+                <tr><td>LOW</td><td>4</td><td style="color:var(--accent)">Cyan</td><td>Info</td></tr>
+            </tbody>
+        </table>
+
+        <p><strong>Default alarms:</strong></p>
+        <ul>
+            <li><code>GPU_Temp_Crit</code>: >= 90°C</li>
+            <li><code>GPU_Temp_Throt</code>: >= 83°C</li>
+            <li><code>GPU_Temp_Warn</code>: >= 75°C</li>
+            <li><code>GPU_VRAM_Low</code>: > 90% used</li>
+            <li><code>RTR_Queue_Full</code>: Queue at capacity</li>
+            <li><code>RTR_Timeout</code>: Request timeout</li>
+        </ul>
+
+        <div class="nav-footer">
+            <a href="../../" class="nav-btn">← Docs Home</a>
+            <a href="../../../" class="nav-btn">Main Site →</a>
+        </div>
+    </div>
+</body>
+</html>

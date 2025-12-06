@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration - Megazord</title>
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-surface: #12121a;
+            --bg-surface-light: #1a1a25;
+            --accent: #00d4ff;
+            --success: #00ff88;
+            --warning: #ffaa00;
+            --error: #ff4466;
+            --text: #ffffff;
+            --text-dim: #888899;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        .back-link {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            color: var(--text-dim); text-decoration: none; font-size: 0.875rem; margin-bottom: 2rem;
+        }
+        .back-link:hover { color: var(--accent); }
+        h1 { color: var(--accent); font-size: 2.5rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--bg-surface-light); }
+        h2 { color: var(--text); font-size: 1.75rem; margin: 2rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--bg-surface-light); }
+        h3 { color: var(--text); font-size: 1.25rem; margin: 1.5rem 0 0.75rem; }
+        p { margin-bottom: 1rem; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        code { font-family: 'SF Mono', monospace; background: var(--bg-surface); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.9em; color: var(--accent); }
+        pre { background: var(--bg-surface); padding: 1.25rem; border-radius: 8px; overflow-x: auto; margin: 1rem 0; border: 1px solid var(--bg-surface-light); }
+        pre code { background: none; padding: 0; color: var(--text); }
+        ul, ol { margin: 1rem 0; padding-left: 2rem; }
+        li { margin-bottom: 0.5rem; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; background: var(--bg-surface); border-radius: 8px; overflow: hidden; }
+        th, td { text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid var(--bg-surface-light); }
+        th { background: var(--bg-surface-light); font-weight: 600; color: var(--text-dim); text-transform: uppercase; font-size: 0.75rem; }
+        .nav-footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--bg-surface-light); display: flex; justify-content: space-between; gap: 1rem; }
+        .nav-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--bg-surface); border: 1px solid var(--bg-surface-light); border-radius: 8px; color: var(--text); text-decoration: none; }
+        .nav-btn:hover { background: var(--bg-surface-light); border-color: var(--accent); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../../" class="back-link">← Back to Docs</a>
+
+        <h1>Configuration Reference</h1>
+        <p>All Megazord parameters are environment-configurable with sensible defaults.</p>
+
+        <h2>System Parameters</h2>
+        <table>
+            <thead>
+                <tr><th>Variable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>SYS_NAME</code></td><td>Megazord</td><td>System name</td></tr>
+                <tr><td><code>GPU_MAX</code></td><td>16</td><td>Maximum GPUs to manage</td></tr>
+                <tr><td><code>API_PORT</code></td><td>8420</td><td>REST API port</td></tr>
+                <tr><td><code>WS_PORT</code></td><td>8421</td><td>WebSocket port</td></tr>
+                <tr><td><code>DB_PATH</code></td><td>~/.megazord/state.db</td><td>SQLite database path</td></tr>
+                <tr><td><code>HEALTH_INT</code></td><td>30</td><td>Health check interval (seconds)</td></tr>
+                <tr><td><code>QUEUE_MAX</code></td><td>100</td><td>Maximum queue depth</td></tr>
+                <tr><td><code>LOG_LVL</code></td><td>2</td><td>Log level (0=ERR, 1=WARN, 2=INFO, 3=DEBUG)</td></tr>
+            </tbody>
+        </table>
+
+        <h2>Thermal Parameters</h2>
+        <table>
+            <thead>
+                <tr><th>Variable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>TEMP_WARN</code></td><td>75</td><td>Warning temperature (°C)</td></tr>
+                <tr><td><code>TEMP_THROT</code></td><td>83</td><td>Throttle temperature (°C)</td></tr>
+                <tr><td><code>TEMP_SHUT</code></td><td>90</td><td>Shutdown temperature (°C)</td></tr>
+                <tr><td><code>TEMP_HYST</code></td><td>5</td><td>Hysteresis for state clearing (°C)</td></tr>
+            </tbody>
+        </table>
+
+        <h2>Router Parameters</h2>
+        <table>
+            <thead>
+                <tr><th>Variable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>RTR_TIMEOUT</code></td><td>300</td><td>Request timeout (seconds)</td></tr>
+                <tr><td><code>RTR_RETRY</code></td><td>3</td><td>Maximum retry attempts</td></tr>
+                <tr><td><code>RTR_PREFER</code></td><td>true</td><td>Prefer already-loaded models</td></tr>
+                <tr><td><code>RTR_BAL</code></td><td>0</td><td>Balance mode (0=Speed, 1=VRAM, 2=RoundRobin)</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Balance Modes</h3>
+        <ul>
+            <li><strong>Speed (0)</strong>: Route to fastest available GPU</li>
+            <li><strong>VRAM (1)</strong>: Route to GPU with most available memory</li>
+            <li><strong>RoundRobin (2)</strong>: Distribute evenly across GPUs</li>
+        </ul>
+
+        <h2>Model Parameters</h2>
+        <table>
+            <thead>
+                <tr><th>Variable</th><th>Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>MDL_IDLE</code></td><td>30</td><td>Unload after idle (minutes)</td></tr>
+                <tr><td><code>MDL_CACHE</code></td><td>3</td><td>Maximum cached models</td></tr>
+                <tr><td><code>MDL_SHARD_MIN</code></td><td>2</td><td>Minimum GPUs for sharding</td></tr>
+            </tbody>
+        </table>
+
+        <h2>Example Configuration</h2>
+
+        <h3>Environment File</h3>
+        <pre><code># .env
+SYS_NAME=ProductionCluster
+GPU_MAX=8
+API_PORT=8420
+
+TEMP_WARN=70
+TEMP_THROT=80
+TEMP_SHUT=85
+
+RTR_BAL=0  # Speed priority
+RTR_TIMEOUT=600
+
+MDL_IDLE=60  # Unload after 1 hour</code></pre>
+
+        <h3>Python Configuration</h3>
+        <pre><code>from megazord import Megazord
+
+Z = Megazord(
+    gpu_max=8,
+    api_port=8420,
+    temp_throttle=80,
+    temp_shutdown=85,
+    health_interval=15,
+    queue_max=200,
+)</code></pre>
+
+        <h3 id="cli-configuration">CLI Configuration</h3>
+        <pre><code># Set individual parameters
+megazord config set sys.api_port 9000
+megazord config set therm.throttle 80
+
+# View current config
+megazord config get
+megazord config get sys.name</code></pre>
+
+        <h2>Runtime Updates</h2>
+        <p>Some parameters can be updated at runtime via API:</p>
+        <pre><code>curl -X POST http://localhost:8420/params \
+  -H "Content-Type: application/json" \
+  -d '{"params": {"therm.warn": 72}}'</code></pre>
+
+        <div class="nav-footer">
+            <a href="../../" class="nav-btn">← Docs Home</a>
+            <a href="../../../" class="nav-btn">Main Site →</a>
+        </div>
+    </div>
+</body>
+</html>
