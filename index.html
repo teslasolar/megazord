@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Megazord | Local LLM Cluster</title>
-    <meta name="description" content="Generic Local LLM Cluster - ISA-88/95/101 Compliant">
+    <meta name="description" content="Generic Local LLM Cluster - ISA-88/95/101 Compliant. Multi-GPU inference with model sharding.">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
     <link rel="stylesheet" href="css/main.css">
 </head>
@@ -51,8 +51,175 @@
                 <div class="stat"><div class="value">&lt;100ms</div><div class="label">Routing Overhead</div></div>
             </div>
         </section>
+
+        <section class="udt-section">
+            <h2>Core Components</h2>
+            <div class="udt-grid">
+                <div class="udt-card">
+                    <h4>Router (core/router.py)</h4>
+                    <pre>
+┌─────────────────────────────────────┐
+│ 1. Already loaded? → Use existing   │
+│ 2. Single GPU fits? → Use fastest   │
+│ 3. Shard across multiple (ADDITIVE) │
+│ 4. No GPUs? → Queue request         │
+└─────────────────────────────────────┘</pre>
+                </div>
+                <div class="udt-card">
+                    <h4>GPU Scanner (core/gpu.py)</h4>
+                    <pre>
+┌─────────────────────────────────────┐
+│ NVML wrapper for GPU detection      │
+│ • VRAM monitoring (total/avail)     │
+│ • Temperature tracking              │
+│ • Utilization metrics               │
+│ • Mock scanner for testing          │
+└─────────────────────────────────────┘</pre>
+                </div>
+                <div class="udt-card">
+                    <h4>State Machine (core/states.py)</h4>
+                    <pre>
+GPU: OFF→STARTING→READY⇄BUSY→ERROR
+     └────────→THROTTLE←────┘
+
+Router: IDLE→STARTING→EXECUTE⇄HELD
+                    └→STOPPING→┘</pre>
+                </div>
+                <div class="udt-card">
+                    <h4>Alarm System (monitor/alarms.py)</h4>
+                    <pre>
+ISA-18.2 Priority Classes:
+┌────────┬────────┬──────────────┐
+│ CRIT   │ Red    │ Auto-shutdown│
+│ HIGH   │ Orange │ Alert + pause│
+│ MED    │ Yellow │ Warning      │
+│ LOW    │ Cyan   │ Info         │
+└────────┴────────┴──────────────┘</pre>
+                </div>
+            </div>
+        </section>
+
+        <section class="quickstart">
+            <h2>Quick Start</h2>
+            <code><span class="comment"># Install</span>
+<span class="cmd">pip install megazord</span>
+
+<span class="comment"># Initialize and scan GPUs</span>
+<span class="cmd">megazord init</span>
+
+<span class="comment"># Register a model (48GB VRAM, shardable)</span>
+<span class="cmd">megazord model add llama-70b 48000 --shard</span>
+
+<span class="comment"># Load model onto available GPUs</span>
+<span class="cmd">megazord model load llama-70b</span>
+
+<span class="comment"># Start the API server</span>
+<span class="cmd">megazord serve --port 8420</span></code>
+        </section>
+
+        <section class="udt-section">
+            <h2>API Endpoints</h2>
+            <div class="udt-grid">
+                <div class="udt-card">
+                    <h4>OpenAI Compatible</h4>
+                    <pre>
+POST /v1/completions
+POST /v1/chat/completions
+GET  /models</pre>
+                </div>
+                <div class="udt-card">
+                    <h4>GPU Management</h4>
+                    <pre>
+GET  /gpus
+GET  /gpus/{hash}
+GET  /health</pre>
+                </div>
+                <div class="udt-card">
+                    <h4>Model Operations</h4>
+                    <pre>
+POST /model/add
+POST /model/load
+POST /model/unload</pre>
+                </div>
+                <div class="udt-card">
+                    <h4>Monitoring</h4>
+                    <pre>
+GET  /stats
+GET  /queue
+GET  /alarms
+WS   /ws (real-time)</pre>
+                </div>
+            </div>
+        </section>
+
+        <section class="udt-section">
+            <h2>Tech Stack</h2>
+            <div class="udt-grid">
+                <div class="udt-card">
+                    <h4>Backend</h4>
+                    <pre>
+Python 3.10+
+FastAPI + Uvicorn
+Pydantic v2
+aiosqlite
+nvidia-ml-py (pynvml)</pre>
+                </div>
+                <div class="udt-card">
+                    <h4>Frontend</h4>
+                    <pre>
+React 18 + TypeScript
+Vite
+Tailwind CSS
+Recharts
+Lucide Icons</pre>
+                </div>
+                <div class="udt-card">
+                    <h4>CLI</h4>
+                    <pre>
+Typer
+Rich (terminal UI)
+Click (underlying)</pre>
+                </div>
+                <div class="udt-card">
+                    <h4>DevOps</h4>
+                    <pre>
+GitHub Actions CI/CD
+pytest + pytest-asyncio
+ruff + mypy
+Lighthouse audits</pre>
+                </div>
+            </div>
+        </section>
+
+        <section class="udt-section">
+            <h2>Python SDK</h2>
+            <div class="udt-card" style="max-width: 600px; margin: 0 auto;">
+                <h4>Usage Example</h4>
+                <pre style="color: var(--accent);">
+from megazord import Megazord, M
+
+# Initialize
+Z = Megazord(gpu_max=8, api_port=8420)
+await Z.init()
+
+# Scan GPUs
+Z.scan()  # Detect available GPUs
+
+# Register model (48GB, shardable)
+Z.m('llama-70b', vram=48000, shard=True)
+
+# Run inference
+result = await Z.r(M('llama-70b'), "Hello!")
+print(result.text)</pre>
+            </div>
+        </section>
+
     </main>
-    <footer><p class="quote">"nothing leaves premises"</p><p>— Phoenix</p></footer>
+    <footer>
+        <p class="quote">"nothing leaves premises"</p>
+        <p>— Phoenix</p>
+        <p style="margin-top: 1rem; font-size: 0.75rem;">MIT License | Python 3.10+ | <a href="https://github.com/teslasolar/megazord" style="color: var(--accent);">GitHub</a></p>
+    </footer>
     <script src="js/main.js"></script>
 </body>
 </html>
