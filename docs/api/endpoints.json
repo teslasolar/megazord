@@ -1,0 +1,194 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Megazord API Endpoints",
+  "description": "Centralized API endpoint definitions for consistency across playground and docs",
+  "version": "0.1.0",
+  "baseUrl": "http://localhost:8420",
+  "endpoints": {
+    "health": {
+      "method": "GET",
+      "path": "/health",
+      "description": "System health check",
+      "category": "system",
+      "response": "HealthResponse"
+    },
+    "stats": {
+      "method": "GET",
+      "path": "/stats",
+      "description": "Detailed statistics",
+      "category": "system",
+      "response": "StatsResponse"
+    },
+    "gpus": {
+      "method": "GET",
+      "path": "/gpus",
+      "description": "List all GPUs",
+      "category": "gpu",
+      "response": "GPUResponse[]"
+    },
+    "gpu": {
+      "method": "GET",
+      "path": "/gpus/{hash}",
+      "description": "Get GPU by hash",
+      "category": "gpu",
+      "params": ["hash"],
+      "response": "GPUResponse"
+    },
+    "models": {
+      "method": "GET",
+      "path": "/models",
+      "description": "List all models",
+      "category": "model",
+      "response": "ModelResponse[]"
+    },
+    "model": {
+      "method": "GET",
+      "path": "/models/{hash}",
+      "description": "Get model by hash",
+      "category": "model",
+      "params": ["hash"],
+      "response": "ModelResponse"
+    },
+    "modelAdd": {
+      "method": "POST",
+      "path": "/model/add",
+      "description": "Register a new model",
+      "category": "model",
+      "body": {
+        "name": "string",
+        "vram": "integer",
+        "shard": "boolean",
+        "backend": "string",
+        "context_len": "integer"
+      },
+      "response": "ModelResponse"
+    },
+    "modelLoad": {
+      "method": "POST",
+      "path": "/model/load",
+      "description": "Load model onto GPU(s)",
+      "category": "model",
+      "body": {
+        "name": "string",
+        "gpus": "integer[]"
+      },
+      "response": "ModelResponse"
+    },
+    "modelUnload": {
+      "method": "POST",
+      "path": "/model/unload",
+      "description": "Unload model from GPU(s)",
+      "category": "model",
+      "body": {
+        "name": "string"
+      },
+      "response": "ModelResponse"
+    },
+    "queue": {
+      "method": "GET",
+      "path": "/queue",
+      "description": "View request queue",
+      "category": "inference",
+      "response": "QueueResponse[]"
+    },
+    "alarms": {
+      "method": "GET",
+      "path": "/alarms",
+      "description": "Active alarms",
+      "category": "monitor",
+      "response": "AlarmResponse[]"
+    },
+    "alarmAck": {
+      "method": "POST",
+      "path": "/alarms/{hash}/ack",
+      "description": "Acknowledge alarm",
+      "category": "monitor",
+      "params": ["hash"]
+    },
+    "alarmClear": {
+      "method": "POST",
+      "path": "/alarms/{hash}/clear",
+      "description": "Clear alarm",
+      "category": "monitor",
+      "params": ["hash"]
+    },
+    "params": {
+      "method": "GET",
+      "path": "/params",
+      "description": "Get configuration parameters",
+      "category": "config"
+    },
+    "paramsUpdate": {
+      "method": "POST",
+      "path": "/params",
+      "description": "Update configuration parameters",
+      "category": "config",
+      "body": {
+        "params": "object"
+      }
+    },
+    "controlStart": {
+      "method": "POST",
+      "path": "/control/start",
+      "description": "Start the router",
+      "category": "control"
+    },
+    "controlStop": {
+      "method": "POST",
+      "path": "/control/stop",
+      "description": "Stop the router",
+      "category": "control"
+    },
+    "controlHold": {
+      "method": "POST",
+      "path": "/control/hold",
+      "description": "Hold the router",
+      "category": "control"
+    },
+    "controlResume": {
+      "method": "POST",
+      "path": "/control/resume",
+      "description": "Resume the router",
+      "category": "control"
+    },
+    "completions": {
+      "method": "POST",
+      "path": "/v1/completions",
+      "description": "OpenAI-compatible text completion",
+      "category": "inference",
+      "body": {
+        "model": "string",
+        "prompt": "string",
+        "max_tokens": "integer",
+        "temperature": "number",
+        "top_p": "number",
+        "stop": "string[]"
+      },
+      "response": "CompletionResponse"
+    },
+    "chatCompletions": {
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "description": "OpenAI-compatible chat completion",
+      "category": "inference",
+      "body": {
+        "model": "string",
+        "messages": [{"role": "string", "content": "string"}],
+        "max_tokens": "integer",
+        "temperature": "number",
+        "top_p": "number",
+        "stop": "string[]"
+      },
+      "response": "ChatCompletionResponse"
+    }
+  },
+  "categories": {
+    "system": { "label": "System", "color": "#06B6D4" },
+    "gpu": { "label": "GPU", "color": "#22C55E" },
+    "model": { "label": "Model", "color": "#F59E0B" },
+    "inference": { "label": "Inference", "color": "#8B5CF6" },
+    "monitor": { "label": "Monitor", "color": "#EF4444" },
+    "config": { "label": "Config", "color": "#6B7280" },
+    "control": { "label": "Control", "color": "#3B82F6" }
+  }
+}
