@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 | Megazord</title>
+    <script>
+        // SPA redirect for GitHub Pages
+        // Preserves path for React Router
+        const path = window.location.pathname;
+        const search = window.location.search;
+        const hash = window.location.hash;
+
+        // Check if this is a UI route
+        if (path.startsWith('/ui/') || path.startsWith('/ui')) {
+            // Redirect to UI with hash routing
+            const uiPath = path.replace('/ui', '').replace(/^\//, '');
+            window.location.replace('/ui/#/' + uiPath + search + hash);
+        } else {
+            // Show 404 page
+            document.addEventListener('DOMContentLoaded', function() {
+                document.body.innerHTML = `
+                    <div style="
+                        min-height: 100vh;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        background: #0A0A0F;
+                        color: #E5E5E5;
+                        font-family: monospace;
+                        text-align: center;
+                    ">
+                        <div>
+                            <h1 style="font-size: 6rem; color: #EF4444; margin: 0;">404</h1>
+                            <p style="font-size: 1.5rem; color: #9CA3AF;">Page not found</p>
+                            <p style="color: #06B6D4; margin-top: 2rem;">
+                                <a href="/" style="color: #06B6D4;">← Return to Megazord</a>
+                            </p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+    </script>
+    <style>
+        body { margin: 0; background: #0A0A0F; }
+    </style>
+</head>
+<body></body>
+</html>

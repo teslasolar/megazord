@@ -56,28 +56,99 @@ jobs:
       - name: Install Python dependencies
         run: |
           pip install -e ".[dev]"
-          pip install mkdocs mkdocs-material mkdocs-swagger-ui-tag
 
-      - name: Build documentation
+      - name: Build site structure
         run: |
-          mkdir -p ui/dist/docs
-          # Generate API documentation
+          # Create output directory
+          mkdir -p _site/ui _site/docs/api _site/docs/guides
+
+          # Copy root index.html (main navigation entry point)
+          cp index.html _site/
+          cp 404.html _site/
+
+          # Copy UI build to /ui/
+          cp -r ui/dist/* _site/ui/
+
+          # Copy documentation
+          cp docs/index.md _site/docs/
+          cp docs/api/openapi.yaml _site/docs/api/
+          cp -r docs/guides/* _site/docs/guides/ 2>/dev/null || true
+
+          # Generate API schemas from UDTs
           python -c "
           import json
-          from megazord.api.models import *
-          from pydantic import BaseModel
-          import inspect
+          from megazord.api.models import (
+              CompletionRequest, CompletionResponse,
+              ChatCompletionRequest, ChatCompletionResponse,
+              HealthResponse, GPUResponse, ModelResponse,
+              QueueResponse, AlarmResponse, StatsResponse
+          )
+          from megazord.core.udts import UDT_GPU, UDT_Model, UDT_Request, UDT_Alarm
+          from megazord.core.states import ST, RS, RM, AlarmClass
 
-          models = [CompletionRequest, CompletionResponse, ChatCompletionRequest,
-                   ChatCompletionResponse, HealthResponse, GPUResponse, ModelResponse]
+          # API Models
+          api_models = [
+              CompletionRequest, CompletionResponse,
+              ChatCompletionRequest, ChatCompletionResponse,
+              HealthResponse, GPUResponse, ModelResponse,
+              QueueResponse, AlarmResponse, StatsResponse
+          ]
 
           schemas = {}
-          for model in models:
+          for model in api_models:
               schemas[model.__name__] = model.model_json_schema()
 
-          with open('ui/dist/docs/schemas.json', 'w') as f:
+          # Add state enums
+          schemas['States'] = {
+              'ST': {name: value for name, value in ST.__members__.items()},
+              'RS': {name: value for name, value in RS.__members__.items()},
+              'RM': {name: value for name, value in RM.__members__.items()},
+              'AlarmClass': {name: value for name, value in AlarmClass.__members__.items()},
+          }
+
+          with open('_site/docs/api/schemas.json', 'w') as f:
               json.dump(schemas, f, indent=2)
+
+          print(f'Generated schemas for {len(api_models)} API models')
           "
+
+          # Create docs index.html
+          cat > _site/docs/index.html << 'DOCSHTML'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Megazord Documentation</title>
+              <style>
+                  body { font-family: monospace; background: #0A0A0F; color: #E5E5E5; margin: 0; padding: 2rem; }
+                  a { color: #06B6D4; }
+                  h1 { color: #06B6D4; }
+                  .container { max-width: 800px; margin: 0 auto; }
+                  pre { background: #1A1A2E; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <h1>Megazord Documentation</h1>
+                  <nav>
+                      <ul>
+                          <li><a href="/">Home</a></li>
+                          <li><a href="/ui/">Dashboard</a></li>
+                          <li><a href="./api/openapi.yaml">OpenAPI Spec</a></li>
+                          <li><a href="./api/schemas.json">JSON Schemas</a></li>
+                          <li><a href="./guides/quick-start.md">Quick Start</a></li>
+                          <li><a href="./guides/configuration.md">Configuration</a></li>
+                          <li><a href="./guides/architecture.md">Architecture</a></li>
+                      </ul>
+                  </nav>
+              </div>
+          </body>
+          </html>
+          DOCSHTML
+
+          echo "Site structure:"
+          find _site -type f | head -50
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -85,7 +156,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ui/dist
+          path: _site
 
   deploy:
     environment:
