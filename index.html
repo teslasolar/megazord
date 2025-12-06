@@ -6,220 +6,257 @@
     <title>Megazord | Local LLM Cluster</title>
     <meta name="description" content="Generic Local LLM Cluster - ISA-88/95/101 Compliant. Multi-GPU inference with model sharding.">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/scada.css">
 </head>
 <body>
-    <header>
-        <div class="logo">⚡</div>
-        <h1>MEGAZORD</h1>
-        <p class="tagline">Generic Local LLM Cluster | ISA-88/95/101 Compliant</p>
-        <span class="badge">v0.1.0</span>
-        <pre class="ascii-box">
-╔═══════════════════════════════════════════════════════════════╗
-║  ENTERPRISE: LocalCompute                                     ║
-║  └── SITE: HomeLab                                            ║
-║      └── AREA: GPUCluster                                     ║
-║          └── PROCESS CELL: Megazord                           ║
-║              ├── UNIT: Inference (INF)                        ║
-║              │   ├── EM: Router (RTR)  ← THE UNLOCK           ║
-║              │   └── EM: Scheduler (SCH)                      ║
-║              ├── UNIT: Models (MDL)                           ║
-║              │   ├── EM: Loader (LDR)                         ║
-║              │   └── EM: Sharder (SHR)                        ║
-║              └── CONTROL MODULES: GPU[0..N-1]                 ║
-╚═══════════════════════════════════════════════════════════════╝
-        </pre>
-        <div class="status"><span class="status-dot"></span><span>System Ready</span></div>
-    </header>
-    <main class="container">
-        <nav class="nav-grid">
-            <a href="./ui/index.html" class="nav-card"><div class="icon">🖥️</div><h3>Dashboard</h3><p>Real-time GPU monitoring, model management, and request queue.</p><span class="path">/ui/</span></a>
-            <a href="./docs/index.html" class="nav-card"><div class="icon">📚</div><h3>Documentation</h3><p>Getting started guide, architecture overview, and configuration.</p><span class="path">/docs/</span></a>
-            <a href="./docs/api/playground/" class="nav-card"><div class="icon">🎮</div><h3>API Playground</h3><p>Interactive API testing with live request/response.</p><span class="path">/docs/api/playground/</span></a>
-            <a href="./docs/api/openapi.yaml" class="nav-card"><div class="icon">📡</div><h3>OpenAPI Spec</h3><p>OpenAPI 3.1 specification with all endpoints and schemas.</p><span class="path">/docs/api/openapi.yaml</span></a>
-            <a href="./docs/guides/quick-start/" class="nav-card"><div class="icon">🚀</div><h3>Quick Start</h3><p>Get up and running in minutes with installation guide.</p><span class="path">/docs/guides/quick-start/</span></a>
-            <a href="https://github.com/teslasolar/megazord" class="nav-card" target="_blank" rel="noopener"><div class="icon">💾</div><h3>Source Code</h3><p>Python package, React UI, GitHub Actions, templates.</p><span class="path">github.com ↗</span></a>
-        </nav>
-        <section class="stats-section">
-            <h2>⚡ THE UNLOCK</h2>
-            <p style="text-align:center;color:var(--text-dim);margin-bottom:1.5rem;">Cards ADD capacity, don't bottleneck on slowest</p>
-            <div class="stats-grid">
-                <div class="stat"><div class="value">16</div><div class="label">Max GPUs</div></div>
-                <div class="stat"><div class="value">∞</div><div class="label">Model Sharding</div></div>
-                <div class="stat"><div class="value">100%</div><div class="label">OpenAI Compatible</div></div>
-                <div class="stat"><div class="value">&lt;10MB</div><div class="label">State Footprint</div></div>
-                <div class="stat"><div class="value">&lt;100ms</div><div class="label">Routing Overhead</div></div>
+    <div class="scada-screen">
+        <!-- Header Bar -->
+        <header class="scada-header">
+            <div class="scada-title">
+                <span class="logo">⚡</span>
+                <h1>MEGAZORD</h1>
+                <span class="version">v0.1.0</span>
             </div>
-        </section>
-
-        <section class="udt-section">
-            <h2>Core Components</h2>
-            <div class="udt-grid">
-                <div class="udt-card">
-                    <h4>Router (core/router.py)</h4>
-                    <pre>
-┌─────────────────────────────────────┐
-│ 1. Already loaded? → Use existing   │
-│ 2. Single GPU fits? → Use fastest   │
-│ 3. Shard across multiple (ADDITIVE) │
-│ 4. No GPUs? → Queue request         │
-└─────────────────────────────────────┘</pre>
+            <div class="scada-status">
+                <div class="status-indicator">
+                    <span id="status-dot" class="dot offline"></span>
+                    <span id="status-text">OFFLINE</span>
                 </div>
-                <div class="udt-card">
-                    <h4>GPU Scanner (core/gpu.py)</h4>
-                    <pre>
-┌─────────────────────────────────────┐
-│ NVML wrapper for GPU detection      │
-│ • VRAM monitoring (total/avail)     │
-│ • Temperature tracking              │
-│ • Utilization metrics               │
-│ • Mock scanner for testing          │
-└─────────────────────────────────────┘</pre>
-                </div>
-                <div class="udt-card">
-                    <h4>State Machine (core/states.py)</h4>
-                    <pre>
-GPU: OFF→STARTING→READY⇄BUSY→ERROR
-     └────────→THROTTLE←────┘
-
-Router: IDLE→STARTING→EXECUTE⇄HELD
-                    └→STOPPING→┘</pre>
-                </div>
-                <div class="udt-card">
-                    <h4>Alarm System (monitor/alarms.py)</h4>
-                    <pre>
-ISA-18.2 Priority Classes:
-┌────────┬────────┬──────────────┐
-│ CRIT   │ Red    │ Auto-shutdown│
-│ HIGH   │ Orange │ Alert + pause│
-│ MED    │ Yellow │ Warning      │
-│ LOW    │ Cyan   │ Info         │
-└────────┴────────┴──────────────┘</pre>
+                <div class="status-indicator">
+                    <span>RTR:</span>
+                    <span id="router-mode" style="color: var(--accent);">EXECUTE</span>
                 </div>
             </div>
-        </section>
-
-        <section class="quickstart">
-            <h2>Quick Start</h2>
-            <code><span class="comment"># Install</span>
-<span class="cmd">pip install megazord</span>
-
-<span class="comment"># Initialize and scan GPUs</span>
-<span class="cmd">megazord init</span>
-
-<span class="comment"># Register a model (48GB VRAM, shardable)</span>
-<span class="cmd">megazord model add llama-70b 48000 --shard</span>
-
-<span class="comment"># Load model onto available GPUs</span>
-<span class="cmd">megazord model load llama-70b</span>
-
-<span class="comment"># Start the API server</span>
-<span class="cmd">megazord serve --port 8420</span></code>
-        </section>
-
-        <section class="udt-section">
-            <h2>API Endpoints</h2>
-            <div class="udt-grid">
-                <div class="udt-card">
-                    <h4>OpenAI Compatible</h4>
-                    <pre>
-POST /v1/completions
-POST /v1/chat/completions
-GET  /models</pre>
-                </div>
-                <div class="udt-card">
-                    <h4>GPU Management</h4>
-                    <pre>
-GET  /gpus
-GET  /gpus/{hash}
-GET  /health</pre>
-                </div>
-                <div class="udt-card">
-                    <h4>Model Operations</h4>
-                    <pre>
-POST /model/add
-POST /model/load
-POST /model/unload</pre>
-                </div>
-                <div class="udt-card">
-                    <h4>Monitoring</h4>
-                    <pre>
-GET  /stats
-GET  /queue
-GET  /alarms
-WS   /ws (real-time)</pre>
-                </div>
+            <div class="scada-datetime">
+                <div id="scada-time" class="time">--:--:--</div>
+                <div id="scada-date">---</div>
             </div>
-        </section>
+        </header>
 
-        <section class="udt-section">
-            <h2>Tech Stack</h2>
-            <div class="udt-grid">
-                <div class="udt-card">
-                    <h4>Backend</h4>
-                    <pre>
-Python 3.10+
-FastAPI + Uvicorn
-Pydantic v2
-aiosqlite
-nvidia-ml-py (pynvml)</pre>
+        <!-- Alarm Banner -->
+        <div id="alarm-banner" class="alarm-banner">
+            <span>⚠ ALARM:</span>
+            <span id="alarm-text">No active alarms</span>
+            <button onclick="this.parentElement.classList.remove('active')" style="background:none;border:none;color:white;cursor:pointer;">✕</button>
+        </div>
+
+        <!-- Main Content -->
+        <main class="scada-main">
+            <!-- Left Panel: GPU Array -->
+            <aside>
+                <div class="panel">
+                    <div class="panel-header">
+                        <span class="title">◈ GPU Array</span>
+                        <span><span id="stat-gpus-ready">0</span>/<span id="stat-gpus">0</span></span>
+                    </div>
+                    <div class="panel-body">
+                        <div id="gpu-array" class="gpu-array">
+                            <!-- GPU faceplates populated by JS -->
+                        </div>
+                    </div>
                 </div>
-                <div class="udt-card">
-                    <h4>Frontend</h4>
-                    <pre>
-React 18 + TypeScript
-Vite
-Tailwind CSS
-Recharts
-Lucide Icons</pre>
+
+                <div class="panel" style="margin-top: 0.5rem;">
+                    <div class="panel-header">
+                        <span class="title">◈ Models</span>
+                        <span><span id="stat-models-loaded">0</span>/<span id="stat-models">0</span></span>
+                    </div>
+                    <div class="panel-body">
+                        <div id="model-list" class="model-list">
+                            <!-- Models populated by JS -->
+                        </div>
+                    </div>
                 </div>
-                <div class="udt-card">
-                    <h4>CLI</h4>
-                    <pre>
-Typer
-Rich (terminal UI)
-Click (underlying)</pre>
+            </aside>
+
+            <!-- Center: Process Mimic -->
+            <section class="process-mimic">
+                <!-- Router State Machine -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <span class="title">◈ Router State Machine</span>
+                        <span>PackML</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="state-machine">
+                            <div id="state-idle" class="state-node">Idle</div>
+                            <span class="state-arrow">→</span>
+                            <div id="state-starting" class="state-node">Starting</div>
+                            <span class="state-arrow">→</span>
+                            <div id="state-execute" class="state-node active">Execute</div>
+                            <span class="state-arrow">⇄</span>
+                            <div id="state-held" class="state-node">Held</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="udt-card">
-                    <h4>DevOps</h4>
-                    <pre>
-GitHub Actions CI/CD
-pytest + pytest-asyncio
-ruff + mypy
-Lighthouse audits</pre>
+
+                <!-- Process Diagram -->
+                <div class="panel" style="flex: 1;">
+                    <div class="panel-header">
+                        <span class="title">◈ Process Flow</span>
+                        <span>THE UNLOCK</span>
+                    </div>
+                    <div class="mimic-diagram">
+                        <pre class="mimic-ascii">
+┌─────────────────────────────────────────────────────────────────────┐
+│                         MEGAZORD INFERENCE                          │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   ┌─────────┐     ┌─────────────────────────────────────────────┐   │
+│   │ REQUEST │────▶│              R O U T E R                    │   │
+│   │  QUEUE  │     │  ┌─────────────────────────────────────┐    │   │
+│   │ (<span id="stat-queue">0</span> req) │     │  │ 1. Already loaded? → Use it       │    │   │
+│   └─────────┘     │  │ 2. Single GPU fits? → Fastest      │    │   │
+│                   │  │ 3. Shard? → ADDITIVE throughput    │    │   │
+│                   │  │ 4. No GPU? → Queue                 │    │   │
+│                   │  └─────────────────────────────────────┘    │   │
+│                   └────────────────┬────────────────────────────┘   │
+│                                    │                                │
+│         ┌──────────────────────────┼──────────────────────────┐     │
+│         ▼                          ▼                          ▼     │
+│   ┌───────────┐              ┌───────────┐              ┌───────────┐
+│   │  GPU [0]  │              │  GPU [1]  │              │  GPU [N]  │
+│   │  ████░░░  │              │  ███░░░░  │      ...     │  ██░░░░░  │
+│   │  <span id="gpu0-temp">--</span>°C     │              │  <span id="gpu1-temp">--</span>°C     │              │  <span id="gpun-temp">--</span>°C     │
+│   └───────────┘              └───────────┘              └───────────┘
+│         │                          │                          │     │
+│         └──────────────────────────┼──────────────────────────┘     │
+│                                    ▼                                │
+│                          ┌─────────────────┐                        │
+│                          │    RESPONSE     │                        │
+│                          │  ◀────────────  │                        │
+│                          └─────────────────┘                        │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+                        </pre>
+                    </div>
                 </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-display">
+                    <div class="stat-box">
+                        <div class="value"><span id="stat-total-reqs">0</span></div>
+                        <div class="label">Total Requests</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="value"><span id="stat-completed">0</span></div>
+                        <div class="label">Completed</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="value"><span id="stat-active">0</span></div>
+                        <div class="label">Active</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="value"><span id="stat-rps">0.0</span></div>
+                        <div class="label">Req/sec</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="value"><span id="stat-vram-avail">0</span><span class="unit">GB</span></div>
+                        <div class="label">VRAM Avail</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="value"><span id="stat-vram-total">0</span><span class="unit">GB</span></div>
+                        <div class="label">VRAM Total</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="value"><span id="stat-temp-max">--</span><span class="unit">°C</span></div>
+                        <div class="label">Temp Max</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="value" id="stat-uptime">0s</div>
+                        <div class="label">Uptime</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Navigation & Info -->
+            <aside>
+                <div class="panel">
+                    <div class="panel-header">
+                        <span class="title">◈ Navigation</span>
+                    </div>
+                    <div class="panel-body nav-buttons">
+                        <a href="./ui/index.html" class="nav-btn">
+                            <span class="icon">📊</span>
+                            <div class="text">
+                                <div class="title">Dashboard</div>
+                                <div class="desc">Full monitoring UI</div>
+                            </div>
+                        </a>
+                        <a href="./docs/api/playground/" class="nav-btn">
+                            <span class="icon">🎮</span>
+                            <div class="text">
+                                <div class="title">API Playground</div>
+                                <div class="desc">Test endpoints</div>
+                            </div>
+                        </a>
+                        <a href="./docs/index.html" class="nav-btn">
+                            <span class="icon">📚</span>
+                            <div class="text">
+                                <div class="title">Documentation</div>
+                                <div class="desc">Guides & reference</div>
+                            </div>
+                        </a>
+                        <a href="./docs/api/openapi.yaml" class="nav-btn">
+                            <span class="icon">📡</span>
+                            <div class="text">
+                                <div class="title">OpenAPI Spec</div>
+                                <div class="desc">API schema</div>
+                            </div>
+                        </a>
+                        <a href="https://github.com/teslasolar/megazord" class="nav-btn" target="_blank">
+                            <span class="icon">💾</span>
+                            <div class="text">
+                                <div class="title">Source Code</div>
+                                <div class="desc">GitHub repo</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-top: 0.5rem;">
+                    <div class="panel-header">
+                        <span class="title">◈ System Info</span>
+                    </div>
+                    <div class="panel-body" style="font-size: 0.7rem; color: var(--text-dim);">
+                        <table style="width: 100%;">
+                            <tr><td>API Port</td><td style="text-align: right; color: var(--accent);">8420</td></tr>
+                            <tr><td>WS Port</td><td style="text-align: right; color: var(--accent);">8420</td></tr>
+                            <tr><td>Max GPUs</td><td style="text-align: right; color: var(--accent);">16</td></tr>
+                            <tr><td>Queue Max</td><td style="text-align: right; color: var(--accent);">100</td></tr>
+                            <tr><td>Standards</td><td style="text-align: right; color: var(--success);">ISA-88/95/101</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-top: 0.5rem;">
+                    <div class="panel-header">
+                        <span class="title">◈ Alarms Config</span>
+                    </div>
+                    <div class="panel-body" style="font-size: 0.65rem;">
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <span style="padding: 0.2rem 0.4rem; background: var(--alarm-crit); color: #fff; border-radius: 3px;">CRIT ≥90°C</span>
+                            <span style="padding: 0.2rem 0.4rem; background: var(--alarm-high); color: #000; border-radius: 3px;">HIGH ≥83°C</span>
+                            <span style="padding: 0.2rem 0.4rem; background: var(--alarm-med); color: #000; border-radius: 3px;">MED ≥75°C</span>
+                            <span style="padding: 0.2rem 0.4rem; background: var(--alarm-low); color: #000; border-radius: 3px;">LOW Info</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Footer -->
+        <footer class="scada-footer">
+            <div class="footer-links">
+                <a href="./docs/guides/quick-start/">Quick Start</a>
+                <a href="./docs/guides/architecture/">Architecture</a>
+                <a href="./docs/guides/configuration/">Configuration</a>
             </div>
-        </section>
+            <div class="footer-quote">"nothing leaves premises" — Phoenix</div>
+            <div>MIT License | Python 3.10+</div>
+        </footer>
+    </div>
 
-        <section class="udt-section">
-            <h2>Python SDK</h2>
-            <div class="udt-card" style="max-width: 600px; margin: 0 auto;">
-                <h4>Usage Example</h4>
-                <pre style="color: var(--accent);">
-from megazord import Megazord, M
-
-# Initialize
-Z = Megazord(gpu_max=8, api_port=8420)
-await Z.init()
-
-# Scan GPUs
-Z.scan()  # Detect available GPUs
-
-# Register model (48GB, shardable)
-Z.m('llama-70b', vram=48000, shard=True)
-
-# Run inference
-result = await Z.r(M('llama-70b'), "Hello!")
-print(result.text)</pre>
-            </div>
-        </section>
-
-    </main>
-    <footer>
-        <p class="quote">"nothing leaves premises"</p>
-        <p>— Phoenix</p>
-        <p style="margin-top: 1rem; font-size: 0.75rem;">MIT License | Python 3.10+ | <a href="https://github.com/teslasolar/megazord" style="color: var(--accent);">GitHub</a></p>
-    </footer>
-    <script src="js/main.js"></script>
+    <script src="js/scada.js"></script>
 </body>
 </html>
