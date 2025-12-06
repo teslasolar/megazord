@@ -1,0 +1,527 @@
+openapi: 3.1.0
+info:
+  title: Megazord API
+  description: Generic Local LLM Cluster - ISA-88/95/101 Compliant
+  version: 0.1.0
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:8420
+    description: Local development server
+paths:
+  /health:
+    get:
+      summary: Health Check
+      description: Get system health status
+      operationId: health
+      tags:
+        - System
+      responses:
+        '200':
+          description: Health status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /gpus:
+    get:
+      summary: List GPUs
+      description: Get all registered GPUs
+      operationId: listGpus
+      tags:
+        - GPUs
+      responses:
+        '200':
+          description: GPU list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GPU'
+
+  /gpus/{hash}:
+    get:
+      summary: Get GPU
+      description: Get GPU by hash
+      operationId: getGpu
+      tags:
+        - GPUs
+      parameters:
+        - name: hash
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: GPU details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GPU'
+        '404':
+          description: GPU not found
+
+  /models:
+    get:
+      summary: List Models
+      description: Get all registered models
+      operationId: listModels
+      tags:
+        - Models
+      responses:
+        '200':
+          description: Model list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Model'
+
+  /model/load:
+    post:
+      summary: Load Model
+      description: Load a model onto GPU(s)
+      operationId: loadModel
+      tags:
+        - Models
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelLoadRequest'
+      responses:
+        '200':
+          description: Model loaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Model'
+
+  /model/unload:
+    post:
+      summary: Unload Model
+      description: Unload a model from GPU(s)
+      operationId: unloadModel
+      tags:
+        - Models
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelUnloadRequest'
+      responses:
+        '200':
+          description: Model unloaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Model'
+
+  /v1/completions:
+    post:
+      summary: Create Completion
+      description: OpenAI-compatible text completion endpoint
+      operationId: createCompletion
+      tags:
+        - Inference
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompletionRequest'
+      responses:
+        '200':
+          description: Completion response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompletionResponse'
+
+  /v1/chat/completions:
+    post:
+      summary: Create Chat Completion
+      description: OpenAI-compatible chat completion endpoint
+      operationId: createChatCompletion
+      tags:
+        - Inference
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatCompletionRequest'
+      responses:
+        '200':
+          description: Chat completion response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCompletionResponse'
+
+  /queue:
+    get:
+      summary: Get Queue
+      description: Get request queue
+      operationId: getQueue
+      tags:
+        - System
+      responses:
+        '200':
+          description: Queue contents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Request'
+
+  /stats:
+    get:
+      summary: Get Stats
+      description: Get detailed statistics
+      operationId: getStats
+      tags:
+        - System
+      responses:
+        '200':
+          description: Statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stats'
+
+  /alarms:
+    get:
+      summary: Get Alarms
+      description: Get active alarms
+      operationId: getAlarms
+      tags:
+        - Alarms
+      responses:
+        '200':
+          description: Active alarms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Alarm'
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        name:
+          type: string
+        version:
+          type: string
+        uptime_sec:
+          type: integer
+        gpu_count:
+          type: integer
+        gpu_ready:
+          type: integer
+        model_count:
+          type: integer
+        model_loaded:
+          type: integer
+        queue_depth:
+          type: integer
+        active_requests:
+          type: integer
+
+    GPU:
+      type: object
+      properties:
+        h:
+          type: string
+          description: 8-character hash
+        idx:
+          type: integer
+          description: Device index
+        name:
+          type: string
+        vram_total:
+          type: integer
+          description: Total VRAM in MB
+        vram_avail:
+          type: integer
+          description: Available VRAM in MB
+        vram_pct:
+          type: number
+          description: VRAM usage percentage
+        speed:
+          type: number
+          description: Tokens per second
+        temp:
+          type: integer
+          description: Temperature in Celsius
+        load:
+          type: number
+          description: GPU load 0.0-1.0
+        status:
+          type: integer
+          description: Status enum
+        status_label:
+          type: string
+        ok:
+          type: boolean
+
+    Model:
+      type: object
+      properties:
+        h:
+          type: string
+        name:
+          type: string
+        vram:
+          type: integer
+          description: Required VRAM in MB
+        shard:
+          type: boolean
+          description: Can be sharded across GPUs
+        on:
+          type: array
+          items:
+            type: string
+          description: GPU hashes where loaded
+        refs:
+          type: integer
+          description: Active request count
+        loaded:
+          type: boolean
+
+    ModelLoadRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        gpus:
+          type: array
+          items:
+            type: integer
+
+    ModelUnloadRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+
+    CompletionRequest:
+      type: object
+      required:
+        - model
+        - prompt
+      properties:
+        model:
+          type: string
+        prompt:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        max_tokens:
+          type: integer
+          default: 4096
+        temperature:
+          type: number
+          default: 0.7
+        top_p:
+          type: number
+          default: 0.9
+        stream:
+          type: boolean
+          default: false
+
+    CompletionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+        created:
+          type: integer
+        model:
+          type: string
+        choices:
+          type: array
+          items:
+            $ref: '#/components/schemas/Choice'
+        usage:
+          $ref: '#/components/schemas/Usage'
+
+    ChatCompletionRequest:
+      type: object
+      required:
+        - model
+        - messages
+      properties:
+        model:
+          type: string
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+        max_tokens:
+          type: integer
+          default: 4096
+        temperature:
+          type: number
+          default: 0.7
+        top_p:
+          type: number
+          default: 0.9
+        stream:
+          type: boolean
+          default: false
+
+    ChatCompletionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+        created:
+          type: integer
+        model:
+          type: string
+        choices:
+          type: array
+          items:
+            $ref: '#/components/schemas/Choice'
+        usage:
+          $ref: '#/components/schemas/Usage'
+
+    Message:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [system, user, assistant]
+        content:
+          type: string
+
+    Choice:
+      type: object
+      properties:
+        index:
+          type: integer
+        text:
+          type: string
+        message:
+          $ref: '#/components/schemas/Message'
+        finish_reason:
+          type: string
+
+    Usage:
+      type: object
+      properties:
+        prompt_tokens:
+          type: integer
+        completion_tokens:
+          type: integer
+        total_tokens:
+          type: integer
+
+    Request:
+      type: object
+      properties:
+        h:
+          type: string
+        model_h:
+          type: string
+        gpu_h:
+          type: string
+        tok_in:
+          type: integer
+        tok_out:
+          type: integer
+        status:
+          type: integer
+        status_label:
+          type: string
+        t_start:
+          type: integer
+        priority:
+          type: integer
+        latency_ms:
+          type: integer
+
+    Stats:
+      type: object
+      properties:
+        state:
+          type: string
+        uptime_sec:
+          type: integer
+        gpu_count:
+          type: integer
+        gpu_ready:
+          type: integer
+        model_count:
+          type: integer
+        model_loaded:
+          type: integer
+        queue_depth:
+          type: integer
+        active_requests:
+          type: integer
+        total_requests:
+          type: integer
+        completed_requests:
+          type: integer
+        failed_requests:
+          type: integer
+        requests_per_sec:
+          type: number
+        total_tokens_in:
+          type: integer
+        total_tokens_out:
+          type: integer
+        vram_total_mb:
+          type: integer
+        vram_available_mb:
+          type: integer
+        temp_max:
+          type: number
+        temp_avg:
+          type: number
+
+    Alarm:
+      type: object
+      properties:
+        h:
+          type: string
+        tag:
+          type: string
+        priority:
+          type: integer
+        message:
+          type: string
+        t_raised:
+          type: integer
+        t_ack:
+          type: integer
+        active:
+          type: boolean
+        acknowledged:
+          type: boolean
+        value:
+          type: number

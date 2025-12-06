@@ -1,0 +1,99 @@
+name: Deploy Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: '20'
+  PYTHON_VERSION: '3.11'
+  PNPM_VERSION: '8'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          cache-dependency-path: ui/pnpm-lock.yaml
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install UI dependencies
+        working-directory: ui
+        run: pnpm install --frozen-lockfile
+
+      - name: Build UI
+        working-directory: ui
+        run: pnpm run build
+        env:
+          NODE_ENV: production
+
+      - name: Install Python dependencies
+        run: |
+          pip install -e ".[dev]"
+          pip install mkdocs mkdocs-material mkdocs-swagger-ui-tag
+
+      - name: Build documentation
+        run: |
+          mkdir -p ui/dist/docs
+          # Generate API documentation
+          python -c "
+          import json
+          from megazord.api.models import *
+          from pydantic import BaseModel
+          import inspect
+
+          models = [CompletionRequest, CompletionResponse, ChatCompletionRequest,
+                   ChatCompletionResponse, HealthResponse, GPUResponse, ModelResponse]
+
+          schemas = {}
+          for model in models:
+              schemas[model.__name__] = model.model_json_schema()
+
+          with open('ui/dist/docs/schemas.json', 'w') as f:
+              json.dump(schemas, f, indent=2)
+          "
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ui/dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
