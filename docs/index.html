@@ -5,301 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documentation | Megazord</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
-    <style>
-        :root {
-            --dark: #0A0A0F;
-            --surface: #1A1A2E;
-            --surface-light: #2A2A3E;
-            --accent: #06B6D4;
-            --success: #22C55E;
-            --warning: #F59E0B;
-            --error: #EF4444;
-            --text: #E5E5E5;
-            --text-dim: #9CA3AF;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'SF Mono', Monaco, monospace;
-            background: var(--dark);
-            color: var(--text);
-            min-height: 100vh;
-            line-height: 1.6;
-        }
-        .header {
-            background: var(--surface);
-            border-bottom: 1px solid var(--surface-light);
-            padding: 1.5rem 2rem;
-        }
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
-        .header a { color: var(--text-dim); text-decoration: none; }
-        .header a:hover { color: var(--accent); }
-        .header h1 { color: var(--accent); font-size: 1.5rem; }
-        .header nav { display: flex; gap: 1.5rem; margin-left: auto; }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        .hero {
-            text-align: center;
-            padding: 3rem 0;
-            border-bottom: 1px solid var(--surface-light);
-            margin-bottom: 3rem;
-        }
-        .hero h2 { color: var(--accent); font-size: 2rem; margin-bottom: 0.5rem; }
-        .hero p { color: var(--text-dim); }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--surface-light);
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-decoration: none;
-            color: var(--text);
-            transition: all 0.2s;
-        }
-        .card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
-        .card h3 { color: var(--accent); margin-bottom: 0.5rem; }
-        .card p { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 1rem; }
-        .card .tag {
-            display: inline-block;
-            background: var(--dark);
-            color: var(--success);
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-        }
-        .section { margin-bottom: 3rem; }
-        .section h2 {
-            color: var(--accent);
-            border-bottom: 1px solid var(--surface-light);
-            padding-bottom: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-        .list { list-style: none; }
-        .list li {
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--surface-light);
-        }
-        .list li:last-child { border-bottom: none; }
-        .list a {
-            color: var(--text);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        .list a:hover { color: var(--accent); }
-        .list .icon { font-size: 1.25rem; }
-        .list .desc { color: var(--text-dim); font-size: 0.85rem; margin-left: auto; }
-        code {
-            background: var(--surface);
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.85rem;
-        }
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            border-top: 1px solid var(--surface-light);
-            color: var(--text-dim);
-        }
-    </style>
+    <link rel="stylesheet" href="css/docs.css">
 </head>
 <body>
-    <header class="header">
-        <div class="header-content">
-            <a href="../index.html">← Home</a>
-            <h1>📚 Documentation</h1>
-            <nav>
-                <a href="./guides/quick-start/">Quick Start</a>
-                <a href="./api/playground/">API Playground</a>
-                <a href="../ui/">Dashboard</a>
-            </nav>
-        </div>
-    </header>
-
+    <header class="header"><div class="header-content">
+        <a href="../index.html">← Home</a>
+        <h1>📚 Documentation</h1>
+        <nav><a href="./guides/quick-start/">Quick Start</a><a href="./api/playground/">API Playground</a><a href="../ui/">Dashboard</a></nav>
+    </div></header>
     <main class="container">
-        <div class="hero">
-            <h2>Megazord Documentation</h2>
-            <p>Everything you need to build and operate your local LLM cluster</p>
-        </div>
-
-        <!-- Quick Links -->
+        <div class="hero"><h2>Megazord Documentation</h2><p>Everything you need to build and operate your local LLM cluster</p></div>
         <div class="grid">
-            <a href="./guides/quick-start/" class="card">
-                <h3>🚀 Quick Start</h3>
-                <p>Get up and running in 5 minutes with installation, GPU setup, and first inference.</p>
-                <span class="tag">guides/quick-start/</span>
-            </a>
-
-            <a href="./api/playground/" class="card">
-                <h3>🎮 API Playground</h3>
-                <p>Interactive API testing environment. Send requests and see live responses.</p>
-                <span class="tag">api/playground/</span>
-            </a>
-
-            <a href="./api/openapi.yaml" class="card">
-                <h3>📡 OpenAPI Specification</h3>
-                <p>Complete API reference in OpenAPI 3.1 format. Import into Postman or Insomnia.</p>
-                <span class="tag">api/openapi.yaml</span>
-            </a>
-
-            <a href="./guides/configuration/" class="card">
-                <h3>⚙️ Configuration</h3>
-                <p>All environment variables, thermal settings, router modes, and recipe defaults.</p>
-                <span class="tag">guides/configuration/</span>
-            </a>
-
-            <a href="./guides/architecture/" class="card">
-                <h3>🏗️ Architecture</h3>
-                <p>ISA-88/95/101 physical model, state machines, database schema, and data flow.</p>
-                <span class="tag">guides/architecture/</span>
-            </a>
-
-            <a href="./api/schemas.json" class="card">
-                <h3>📦 JSON Schemas</h3>
-                <p>Auto-generated schemas from Python UDTs. Use for validation and code generation.</p>
-                <span class="tag">api/schemas.json</span>
-            </a>
+            <a href="./guides/quick-start/" class="card"><h3>🚀 Quick Start</h3><p>Get up and running in 5 minutes with installation and first inference.</p><span class="tag">guides/quick-start/</span></a>
+            <a href="./api/playground/" class="card"><h3>🎮 API Playground</h3><p>Interactive API testing environment with live responses.</p><span class="tag">api/playground/</span></a>
+            <a href="./api/openapi.yaml" class="card"><h3>📡 OpenAPI Specification</h3><p>Complete API reference in OpenAPI 3.1 format.</p><span class="tag">api/openapi.yaml</span></a>
+            <a href="./guides/configuration/" class="card"><h3>⚙️ Configuration</h3><p>Environment variables, thermal settings, router modes.</p><span class="tag">guides/configuration/</span></a>
+            <a href="./guides/architecture/" class="card"><h3>🏗️ Architecture</h3><p>ISA-88/95/101 physical model and state machines.</p><span class="tag">guides/architecture/</span></a>
+            <a href="./api/schemas.json" class="card"><h3>📦 JSON Schemas</h3><p>Auto-generated schemas from Python UDTs.</p><span class="tag">api/schemas.json</span></a>
         </div>
-
-        <!-- Guides Section -->
-        <section class="section">
-            <h2>📖 Guides</h2>
-            <ul class="list">
-                <li>
-                    <a href="./guides/quick-start/">
-                        <span class="icon">🚀</span>
-                        <span>Quick Start Guide</span>
-                        <span class="desc">Installation → First Inference</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="./guides/configuration/">
-                        <span class="icon">⚙️</span>
-                        <span>Configuration Reference</span>
-                        <span class="desc">Environment Variables</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="./guides/architecture/">
-                        <span class="icon">🏗️</span>
-                        <span>Architecture Overview</span>
-                        <span class="desc">ISA-88/95/101 Compliance</span>
-                    </a>
-                </li>
-            </ul>
-        </section>
-
-        <!-- API Section -->
-        <section class="section">
-            <h2>📡 API Reference</h2>
-            <ul class="list">
-                <li>
-                    <a href="./api/playground/">
-                        <span class="icon">🎮</span>
-                        <span>Interactive Playground</span>
-                        <span class="desc">Try API Live</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="./api/openapi.yaml">
-                        <span class="icon">📄</span>
-                        <span>OpenAPI 3.1 Specification</span>
-                        <span class="desc">YAML Format</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="./api/schemas.json">
-                        <span class="icon">📦</span>
-                        <span>JSON Schemas</span>
-                        <span class="desc">Pydantic Models</span>
-                    </a>
-                </li>
-            </ul>
-        </section>
-
-        <!-- CLI Section -->
-        <section class="section">
-            <h2>💻 CLI Commands</h2>
-            <ul class="list">
-                <li>
-                    <a href="./guides/quick-start/#initialize">
-                        <span class="icon">▶️</span>
-                        <span><code>megazord init</code></span>
-                        <span class="desc">Initialize database, scan GPUs</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="./guides/quick-start/#start-server">
-                        <span class="icon">🌐</span>
-                        <span><code>megazord serve</code></span>
-                        <span class="desc">Start API server</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="./guides/quick-start/#register-a-model">
-                        <span class="icon">📦</span>
-                        <span><code>megazord model add</code></span>
-                        <span class="desc">Register a model</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="./guides/configuration/#cli-configuration">
-                        <span class="icon">⚙️</span>
-                        <span><code>megazord config</code></span>
-                        <span class="desc">View/set configuration</span>
-                    </a>
-                </li>
-            </ul>
-        </section>
-
-        <!-- Resources -->
-        <section class="section">
-            <h2>🔗 Resources</h2>
-            <ul class="list">
-                <li>
-                    <a href="https://github.com/teslasolar/megazord" target="_blank" rel="noopener">
-                        <span class="icon">💾</span>
-                        <span>GitHub Repository</span>
-                        <span class="desc">Source Code ↗</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="../ui/">
-                        <span class="icon">🖥️</span>
-                        <span>Dashboard UI</span>
-                        <span class="desc">Monitoring Interface</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="../index.html">
-                        <span class="icon">🏠</span>
-                        <span>Home</span>
-                        <span class="desc">Main Entry Point</span>
-                    </a>
-                </li>
-            </ul>
-        </section>
+        <section class="section"><h2>📖 Guides</h2><ul class="list">
+            <li><a href="./guides/quick-start/"><span class="icon">🚀</span><span>Quick Start Guide</span><span class="desc">Installation → First Inference</span></a></li>
+            <li><a href="./guides/configuration/"><span class="icon">⚙️</span><span>Configuration Reference</span><span class="desc">Environment Variables</span></a></li>
+            <li><a href="./guides/architecture/"><span class="icon">🏗️</span><span>Architecture Overview</span><span class="desc">ISA-88/95/101 Compliance</span></a></li>
+        </ul></section>
+        <section class="section"><h2>📡 API Reference</h2><ul class="list">
+            <li><a href="./api/playground/"><span class="icon">🎮</span><span>Interactive Playground</span><span class="desc">Try API Live</span></a></li>
+            <li><a href="./api/openapi.yaml"><span class="icon">📄</span><span>OpenAPI 3.1 Specification</span><span class="desc">YAML Format</span></a></li>
+            <li><a href="./api/schemas.json"><span class="icon">📦</span><span>JSON Schemas</span><span class="desc">Pydantic Models</span></a></li>
+        </ul></section>
+        <section class="section"><h2>💻 CLI Commands</h2><ul class="list">
+            <li><a href="./guides/quick-start/#initialize"><span class="icon">▶️</span><span><code>megazord init</code></span><span class="desc">Initialize, scan GPUs</span></a></li>
+            <li><a href="./guides/quick-start/#start-server"><span class="icon">🌐</span><span><code>megazord serve</code></span><span class="desc">Start API server</span></a></li>
+            <li><a href="./guides/quick-start/#register-a-model"><span class="icon">📦</span><span><code>megazord model add</code></span><span class="desc">Register a model</span></a></li>
+        </ul></section>
+        <section class="section"><h2>🔗 Resources</h2><ul class="list">
+            <li><a href="https://github.com/teslasolar/megazord" target="_blank"><span class="icon">💾</span><span>GitHub Repository</span><span class="desc">Source ↗</span></a></li>
+            <li><a href="../ui/"><span class="icon">🖥️</span><span>Dashboard UI</span><span class="desc">Monitoring</span></a></li>
+            <li><a href="../index.html"><span class="icon">🏠</span><span>Home</span><span class="desc">Main Entry</span></a></li>
+        </ul></section>
     </main>
-
-    <footer class="footer">
-        <p>"nothing leaves premises" — Phoenix</p>
-    </footer>
+    <footer class="footer"><p>"nothing leaves premises" — Phoenix</p></footer>
 </body>
 </html>
