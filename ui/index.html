@@ -27,7 +27,6 @@
             display: flex;
         }
 
-        /* Sidebar */
         .sidebar {
             width: 240px;
             background: var(--bg-surface);
@@ -37,307 +36,124 @@
             flex-shrink: 0;
         }
 
-        .logo {
-            padding: 1.25rem;
-            border-bottom: 1px solid var(--bg-surface-light);
-        }
+        .logo { padding: 1.25rem; border-bottom: 1px solid var(--bg-surface-light); }
+        .logo h1 { font-size: 1.25rem; color: var(--accent); }
+        .logo p { font-size: 0.75rem; color: var(--text-dim); }
 
-        .logo h1 {
-            font-size: 1.25rem;
-            color: var(--accent);
-        }
-
-        .logo p {
-            font-size: 0.75rem;
-            color: var(--text-dim);
-        }
-
-        nav {
-            flex: 1;
-            padding: 1rem;
-        }
-
+        nav { flex: 1; padding: 1rem; }
         nav a {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            color: var(--text-dim);
-            text-decoration: none;
-            transition: all 0.2s;
-            margin-bottom: 0.25rem;
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.75rem 1rem; border-radius: 0.5rem;
+            color: var(--text-dim); text-decoration: none;
+            transition: all 0.2s; margin-bottom: 0.25rem;
         }
-
-        nav a:hover, nav a.active {
-            background: var(--bg-surface-light);
-            color: var(--text);
-        }
-
-        nav a.active {
-            background: rgba(0, 212, 255, 0.15);
-            color: var(--accent);
-        }
-
+        nav a:hover, nav a.active { background: var(--bg-surface-light); color: var(--text); }
+        nav a.active { background: rgba(0, 212, 255, 0.15); color: var(--accent); }
         .nav-icon { width: 20px; text-align: center; }
 
-        /* Demo Toggle */
-        .demo-toggle {
-            padding: 1rem;
-            border-top: 1px solid var(--bg-surface-light);
-        }
-
+        .demo-toggle { padding: 1rem; border-top: 1px solid var(--bg-surface-light); }
         .demo-btn {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.5rem 0.75rem;
-            background: var(--bg-surface-light);
-            border: none;
-            border-radius: 0.5rem;
-            color: var(--text-dim);
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.875rem;
-            transition: all 0.2s;
+            width: 100%; display: flex; align-items: center; justify-content: space-between;
+            padding: 0.5rem 0.75rem; background: var(--bg-surface-light);
+            border: none; border-radius: 0.5rem; color: var(--text-dim);
+            cursor: pointer; font-family: inherit; font-size: 0.875rem; transition: all 0.2s;
         }
+        .demo-btn.active { background: rgba(255, 170, 0, 0.15); color: var(--warning); border: 1px solid rgba(255, 170, 0, 0.3); }
+        .demo-hint { font-size: 0.7rem; color: rgba(255, 170, 0, 0.7); padding: 0.5rem 0.25rem 0; }
 
-        .demo-btn.active {
-            background: rgba(255, 170, 0, 0.15);
-            color: var(--warning);
-            border: 1px solid rgba(255, 170, 0, 0.3);
-        }
-
-        .demo-hint {
-            font-size: 0.7rem;
-            color: rgba(255, 170, 0, 0.7);
-            padding: 0.5rem 0.25rem 0;
-        }
-
-        /* Status */
-        .status-bar {
-            padding: 1rem;
-            border-top: 1px solid var(--bg-surface-light);
-        }
-
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.875rem;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--warning);
-        }
-
+        .status-bar { padding: 1rem; border-top: 1px solid var(--bg-surface-light); }
+        .status-indicator { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--warning); }
         .status-dot.connected { background: var(--success); }
 
-        /* Main Content */
-        main {
-            flex: 1;
-            padding: 1.5rem;
-            overflow: auto;
-        }
+        main { flex: 1; padding: 1.5rem; overflow: auto; }
+        .page-title { font-size: 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
 
-        .page-title {
-            font-size: 1.5rem;
+        .client-gpu-banner {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 255, 136, 0.1));
+            border: 1px solid var(--accent);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 1rem;
         }
+        .client-gpu-banner .icon { font-size: 1.5rem; }
+        .client-gpu-banner .info { flex: 1; }
+        .client-gpu-banner .label { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; }
+        .client-gpu-banner .value { font-size: 1rem; color: var(--accent); font-weight: 600; }
+        .client-gpu-banner .tag { font-size: 0.7rem; color: var(--text-dim); font-family: monospace; }
 
-        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
+            gap: 1rem; margin-bottom: 2rem;
         }
-
         .stat-card {
             background: var(--bg-surface);
-            border-radius: 0.75rem;
-            padding: 1.25rem;
+            border-radius: 0.75rem; padding: 1.25rem;
             border: 1px solid var(--bg-surface-light);
         }
-
-        .stat-label {
-            font-size: 0.75rem;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-top: 0.25rem;
-        }
-
+        .stat-label { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+        .stat-tag { font-size: 0.6rem; color: var(--text-dim); font-family: monospace; margin-top: 0.25rem; }
+        .stat-value { font-size: 2rem; font-weight: bold; margin-top: 0.25rem; }
         .stat-value.accent { color: var(--accent); }
         .stat-value.success { color: var(--success); }
         .stat-value.warning { color: var(--warning); }
 
-        /* GPU Grid */
         .gpu-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
+            gap: 1rem; margin-bottom: 2rem;
         }
-
         .gpu-card {
             background: var(--bg-surface);
-            border-radius: 0.75rem;
-            padding: 1.25rem;
+            border-radius: 0.75rem; padding: 1.25rem;
             border: 1px solid var(--bg-surface-light);
         }
-
-        .gpu-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .gpu-name {
-            font-weight: 600;
-            color: var(--accent);
-        }
-
-        .gpu-state {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            text-transform: uppercase;
-        }
-
+        .gpu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        .gpu-name { font-weight: 600; color: var(--accent); }
+        .gpu-tag { font-size: 0.65rem; color: var(--text-dim); font-family: monospace; margin-bottom: 0.75rem; }
+        .gpu-state { font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 0.25rem; text-transform: uppercase; }
         .gpu-state.ready { background: rgba(0, 255, 136, 0.15); color: var(--success); }
         .gpu-state.busy { background: rgba(0, 212, 255, 0.15); color: var(--accent); }
         .gpu-state.throttle { background: rgba(255, 170, 0, 0.15); color: var(--warning); }
+        .gpu-state.offline { background: rgba(255, 68, 102, 0.15); color: var(--error); }
 
-        .gpu-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-        }
+        .gpu-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        .gpu-stat { display: flex; flex-direction: column; }
+        .gpu-stat-label { font-size: 0.7rem; color: var(--text-dim); }
+        .gpu-stat-value { font-size: 1rem; font-weight: 500; }
 
-        .gpu-stat {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .gpu-stat-label {
-            font-size: 0.7rem;
-            color: var(--text-dim);
-        }
-
-        .gpu-stat-value {
-            font-size: 1rem;
-            font-weight: 500;
-        }
-
-        /* Progress bars */
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: var(--bg-surface-light);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-top: 0.5rem;
-        }
-
-        .progress-fill {
-            height: 100%;
-            border-radius: 3px;
-            transition: width 0.3s;
-        }
-
+        .progress-bar { width: 100%; height: 6px; background: var(--bg-surface-light); border-radius: 3px; overflow: hidden; margin-top: 0.5rem; }
+        .progress-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
         .progress-fill.low { background: var(--success); }
         .progress-fill.medium { background: var(--warning); }
         .progress-fill.high { background: var(--error); }
 
-        /* Models Table */
-        .models-table {
-            width: 100%;
-            background: var(--bg-surface);
-            border-radius: 0.75rem;
-            border: 1px solid var(--bg-surface-light);
-            overflow: hidden;
-        }
+        .models-table { width: 100%; background: var(--bg-surface); border-radius: 0.75rem; border: 1px solid var(--bg-surface-light); overflow: hidden; }
+        .models-table th, .models-table td { text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid var(--bg-surface-light); }
+        .models-table th { background: var(--bg-surface-light); font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); }
+        .models-table tr:last-child td { border-bottom: none; }
+        .model-hash { font-family: 'SF Mono', monospace; color: var(--accent); }
 
-        .models-table th, .models-table td {
-            text-align: left;
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid var(--bg-surface-light);
-        }
-
-        .models-table th {
-            background: var(--bg-surface-light);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--text-dim);
-        }
-
-        .models-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .model-hash {
-            font-family: 'SF Mono', monospace;
-            color: var(--accent);
-        }
-
-        /* Back link */
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-dim);
-            text-decoration: none;
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-        }
-
+        .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-dim); text-decoration: none; font-size: 0.875rem; margin-bottom: 1rem; }
         .back-link:hover { color: var(--accent); }
 
-        /* Tabs */
-        .tabs {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--bg-surface-light);
-            padding-bottom: 0.5rem;
-        }
-
-        .tab {
-            padding: 0.5rem 1rem;
-            background: none;
-            border: none;
-            color: var(--text-dim);
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.875rem;
-            border-radius: 0.5rem 0.5rem 0 0;
-            transition: all 0.2s;
-        }
-
+        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--bg-surface-light); padding-bottom: 0.5rem; }
+        .tab { padding: 0.5rem 1rem; background: none; border: none; color: var(--text-dim); cursor: pointer; font-family: inherit; font-size: 0.875rem; border-radius: 0.5rem 0.5rem 0 0; transition: all 0.2s; }
         .tab:hover { color: var(--text); }
         .tab.active { color: var(--accent); background: var(--bg-surface-light); }
 
-        /* Views */
         .view { display: none; }
         .view.active { display: block; }
+
+        .udt-schema { background: var(--bg-surface); border-radius: 0.5rem; padding: 1rem; margin-top: 1rem; font-size: 0.8rem; }
+        .udt-schema pre { margin: 0; white-space: pre-wrap; color: var(--text-dim); }
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
     <aside class="sidebar">
         <div class="logo">
             <h1>Megazord</h1>
@@ -346,25 +162,23 @@
 
         <nav>
             <a href="#overview" class="active" data-view="overview">
-                <span class="nav-icon">📊</span>
-                <span>Overview</span>
+                <span class="nav-icon">📊</span><span>Overview</span>
             </a>
             <a href="#gpus" data-view="gpus">
-                <span class="nav-icon">🖥️</span>
-                <span>GPUs</span>
+                <span class="nav-icon">🖥️</span><span>GPUs</span>
             </a>
             <a href="#models" data-view="models">
-                <span class="nav-icon">📦</span>
-                <span>Models</span>
+                <span class="nav-icon">📦</span><span>Models</span>
             </a>
             <a href="#queue" data-view="queue">
-                <span class="nav-icon">📋</span>
-                <span>Queue</span>
+                <span class="nav-icon">📋</span><span>Queue</span>
             </a>
             <a href="#alarms" data-view="alarms">
-                <span class="nav-icon">⚠️</span>
-                <span>Alarms</span>
+                <span class="nav-icon">⚠️</span><span>Alarms</span>
                 <span id="alarm-badge" style="display:none;margin-left:auto;background:var(--error);color:white;font-size:0.7rem;padding:0.125rem 0.375rem;border-radius:999px;">0</span>
+            </a>
+            <a href="#schemas" data-view="schemas">
+                <span class="nav-icon">📐</span><span>UDT Schemas</span>
             </a>
         </nav>
 
@@ -385,7 +199,6 @@
         </div>
     </aside>
 
-    <!-- Main Content -->
     <main>
         <a href="../index.html" class="back-link">← Back to Home</a>
 
@@ -393,21 +206,39 @@
         <div id="view-overview" class="view active">
             <h1 class="page-title">📊 Cluster Overview</h1>
 
+            <!-- Client GPU Detection Banner -->
+            <div class="client-gpu-banner" id="client-gpu-banner" style="display:none;">
+                <div class="icon">🎮</div>
+                <div class="info">
+                    <div class="label">Your GPU (WebGPU)</div>
+                    <div class="value" id="client-gpu-name">Detecting...</div>
+                    <div class="tag" id="client-gpu-tag">GPUCluster_CLIENT_GPU00</div>
+                </div>
+                <div class="info">
+                    <div class="label">VRAM</div>
+                    <div class="value" id="client-gpu-vram">--</div>
+                </div>
+            </div>
+
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-label">Total GPUs</div>
+                    <div class="stat-tag" id="tag-gpu-count">GPUCluster_INF_RTR_GPU_Count</div>
                     <div class="stat-value accent" id="stat-gpus">0</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Loaded Models</div>
+                    <div class="stat-tag" id="tag-model-count">GPUCluster_MDL_LDR_Model_Count</div>
                     <div class="stat-value success" id="stat-models">0</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Queue Depth</div>
+                    <div class="stat-tag" id="tag-queue-depth">GPUCluster_INF_RTR_Queue_Depth</div>
                     <div class="stat-value warning" id="stat-queue">0</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Active Alarms</div>
+                    <div class="stat-tag" id="tag-alarm-count">GPUCluster_ALM_Active_Count</div>
                     <div class="stat-value" id="stat-alarms" style="color:var(--error)">0</div>
                 </div>
             </div>
@@ -427,13 +258,7 @@
             <h1 class="page-title">📦 Loaded Models</h1>
             <table class="models-table">
                 <thead>
-                    <tr>
-                        <th>Model</th>
-                        <th>Hash</th>
-                        <th>VRAM</th>
-                        <th>GPUs</th>
-                        <th>Requests</th>
-                    </tr>
+                    <tr><th>Model</th><th>Hash (M())</th><th>VRAM</th><th>GPUs</th><th>Requests</th></tr>
                 </thead>
                 <tbody id="models-body"></tbody>
             </table>
@@ -444,13 +269,7 @@
             <h1 class="page-title">📋 Request Queue</h1>
             <table class="models-table">
                 <thead>
-                    <tr>
-                        <th>Request ID</th>
-                        <th>Model</th>
-                        <th>State</th>
-                        <th>Priority</th>
-                        <th>Queued</th>
-                    </tr>
+                    <tr><th>Request ID (R())</th><th>Model</th><th>State</th><th>Priority</th><th>Queued</th></tr>
                 </thead>
                 <tbody id="queue-body"></tbody>
             </table>
@@ -465,83 +284,318 @@
             </div>
             <table class="models-table">
                 <thead>
-                    <tr>
-                        <th>Class</th>
-                        <th>Source</th>
-                        <th>Message</th>
-                        <th>Time</th>
-                        <th>Status</th>
-                    </tr>
+                    <tr><th>Class</th><th>Tag</th><th>Message</th><th>Time</th><th>Status</th></tr>
                 </thead>
                 <tbody id="alarms-body"></tbody>
             </table>
         </div>
+
+        <!-- UDT Schemas View -->
+        <div id="view-schemas" class="view">
+            <h1 class="page-title">📐 UDT Schemas</h1>
+            <p style="color:var(--text-dim);margin-bottom:1rem;">ISA-88/95 compliant User Defined Types</p>
+            <div id="schemas-container"></div>
+        </div>
     </main>
 
     <script>
-        // Demo data generators
-        function generateDemoData() {
-            const gpuNames = [
-                'NVIDIA RTX 4090', 'NVIDIA RTX 4080', 'NVIDIA RTX 3090',
-                'NVIDIA A100', 'NVIDIA A6000', 'NVIDIA RTX 4070 Ti'
-            ];
-            const states = ['READY', 'BUSY', 'READY', 'BUSY', 'READY', 'THROTTLE'];
-            const models = [
-                { name: 'llama-3-70b', vram: 42000 },
-                { name: 'mistral-7b', vram: 8000 },
-                { name: 'codellama-34b', vram: 20000 },
-                { name: 'phi-3-mini', vram: 4000 }
-            ];
+        // ═══════════════════════════════════════════════════════════════════════
+        // UDT SCHEMAS (ISA-88/95 Compliant)
+        // ═══════════════════════════════════════════════════════════════════════
+        const UDT = {
+            // GPU State UDT
+            GPU: {
+                name: 'UDT_GPU',
+                tag_prefix: 'GPUCluster_INF_GPU',
+                fields: {
+                    h:          { type: 'STRING[8]',  desc: 'Hash ID (H() function)' },
+                    idx:        { type: 'INT',        desc: 'Device index 0..N-1' },
+                    name:       { type: 'STRING[64]', desc: 'GPU product name' },
+                    state:      { type: 'ENUM:ST',    desc: 'PackML state' },
+                    temp:       { type: 'INT',        desc: 'Temperature °C', unit: '°C' },
+                    pwr:        { type: 'INT',        desc: 'Power draw', unit: 'W' },
+                    pwr_cap:    { type: 'INT',        desc: 'Power limit', unit: 'W' },
+                    vram_used:  { type: 'INT',        desc: 'VRAM used', unit: 'MB' },
+                    vram_total: { type: 'INT',        desc: 'VRAM total', unit: 'MB' },
+                    util:       { type: 'REAL',       desc: 'Utilization 0-100', unit: '%' },
+                    models:     { type: 'ARRAY[STRING]', desc: 'Loaded model hashes' }
+                }
+            },
+            // Model UDT
+            Model: {
+                name: 'UDT_Model',
+                tag_prefix: 'GPUCluster_MDL',
+                fields: {
+                    h:       { type: 'STRING[8]',  desc: 'Hash ID (M() function)' },
+                    name:    { type: 'STRING[64]', desc: 'Model name' },
+                    vram:    { type: 'INT',        desc: 'VRAM requirement', unit: 'MB' },
+                    shard:   { type: 'BOOL',       desc: 'Can shard across GPUs' },
+                    on_gpus: { type: 'ARRAY[STRING]', desc: 'GPU hashes where loaded' },
+                    req_cnt: { type: 'INT',        desc: 'Total request count' }
+                }
+            },
+            // Request UDT
+            Request: {
+                name: 'UDT_Request',
+                tag_prefix: 'GPUCluster_INF_RTR_REQ',
+                fields: {
+                    h:         { type: 'STRING[8]',  desc: 'Hash ID (R() function)' },
+                    model_h:   { type: 'STRING[8]',  desc: 'Target model hash' },
+                    state:     { type: 'ENUM:RS',    desc: 'Request state' },
+                    priority:  { type: 'INT',        desc: 'Queue priority 0-9' },
+                    queued_at: { type: 'DATETIME',   desc: 'Queue timestamp' },
+                    tok_in:    { type: 'INT',        desc: 'Input tokens' },
+                    tok_out:   { type: 'INT',        desc: 'Output tokens' }
+                }
+            },
+            // Alarm UDT (ISA-18.2)
+            Alarm: {
+                name: 'UDT_Alarm',
+                tag_prefix: 'GPUCluster_ALM',
+                fields: {
+                    h:        { type: 'STRING[8]',  desc: 'Alarm hash' },
+                    tag:      { type: 'STRING[64]', desc: 'Source tag' },
+                    class:    { type: 'ENUM:AlarmClass', desc: 'CRIT/HIGH/MED/LOW' },
+                    message:  { type: 'STRING[256]', desc: 'Alarm message' },
+                    t_raised: { type: 'DATETIME',   desc: 'Time raised' },
+                    t_ack:    { type: 'DATETIME',   desc: 'Time acknowledged' },
+                    t_clear:  { type: 'DATETIME',   desc: 'Time cleared' },
+                    active:   { type: 'BOOL',       desc: 'Currently active' }
+                }
+            }
+        };
 
-            const numGpus = 4 + Math.floor(Math.random() * 4);
+        // State Enums
+        const ST = { OFF: 0, STARTING: 1, READY: 2, BUSY: 3, THROTTLE: 4, ERROR: 5 };
+        const ST_NAMES = ['OFF', 'STARTING', 'READY', 'BUSY', 'THROTTLE', 'ERROR'];
+        const RS = { QUEUED: 0, ROUTING: 1, LOADING: 2, PROCESSING: 3, COMPLETE: 4, ERROR: 5 };
+        const RS_NAMES = ['QUEUED', 'ROUTING', 'LOADING', 'PROCESSING', 'COMPLETE', 'ERROR'];
+        const AlarmClass = { CRIT: 1, HIGH: 2, MED: 3, LOW: 4 };
+
+        // Hash functions (8-char MD5 prefix simulation)
+        const H = (x) => 'H' + btoa(String(x)).slice(0, 7).replace(/[^a-zA-Z0-9]/g, 'x');
+        const M = (x) => 'M' + btoa(String(x)).slice(0, 7).replace(/[^a-zA-Z0-9]/g, 'x');
+        const R = (x) => 'R' + btoa(String(Date.now()) + String(x)).slice(0, 7).replace(/[^a-zA-Z0-9]/g, 'x');
+
+        // Tag generator
+        const makeTag = (prefix, idx, field) => `${prefix}${String(idx).padStart(2, '0')}_${field}`;
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // WEBGPU CLIENT DETECTION
+        // ═══════════════════════════════════════════════════════════════════════
+        let clientGPU = null;
+
+        async function detectClientGPU() {
+            if (!navigator.gpu) {
+                console.log('WebGPU not supported');
+                return null;
+            }
+
+            try {
+                const adapter = await navigator.gpu.requestAdapter();
+                if (!adapter) {
+                    console.log('No GPU adapter found');
+                    return null;
+                }
+
+                const info = await adapter.requestAdapterInfo();
+                const device = await adapter.requestDevice();
+                const limits = device.limits;
+
+                clientGPU = {
+                    h: H('client-0'),
+                    idx: 0,
+                    name: info.device || info.description || 'WebGPU Device',
+                    vendor: info.vendor || 'Unknown',
+                    architecture: info.architecture || 'Unknown',
+                    state: ST.READY,
+                    // WebGPU doesn't expose exact VRAM, estimate from limits
+                    vram_total: Math.round((limits.maxBufferSize || 256 * 1024 * 1024) / (1024 * 1024)),
+                    vram_used: 0,
+                    temp: null, // WebGPU can't read temperature
+                    pwr: null,
+                    pwr_cap: null,
+                    util: null,
+                    maxTexture2D: limits.maxTextureDimension2D,
+                    maxComputeWorkgroups: limits.maxComputeWorkgroupsPerDimension,
+                    isClient: true
+                };
+
+                // Show banner
+                document.getElementById('client-gpu-banner').style.display = 'flex';
+                document.getElementById('client-gpu-name').textContent = clientGPU.name;
+                document.getElementById('client-gpu-vram').textContent =
+                    clientGPU.vram_total > 1024
+                        ? `~${(clientGPU.vram_total / 1024).toFixed(1)} GB`
+                        : `~${clientGPU.vram_total} MB`;
+                document.getElementById('client-gpu-tag').textContent =
+                    makeTag(UDT.GPU.tag_prefix, 'CL', 'Info');
+
+                return clientGPU;
+            } catch (err) {
+                console.error('WebGPU detection failed:', err);
+                return null;
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // MODEL REGISTRY LOADER
+        // ═══════════════════════════════════════════════════════════════════════
+        let modelRegistry = null;
+
+        async function loadModelRegistry() {
+            try {
+                const response = await fetch('../models/registry.json');
+                if (response.ok) {
+                    modelRegistry = await response.json();
+                    console.log(`Loaded ${modelRegistry.models.length} models from registry`);
+                    return modelRegistry;
+                }
+            } catch (err) {
+                console.log('Registry not available, using defaults');
+            }
+            // Fallback to default models
+            return {
+                version: '1.0.0',
+                tag_prefix: 'GPUCluster_MDL',
+                models: [
+                    { id: 'llama-3-70b', name: 'Llama 3 70B', vram_mb: 42000, shard: true },
+                    { id: 'mistral-7b', name: 'Mistral 7B', vram_mb: 8000, shard: false },
+                    { id: 'codellama-34b', name: 'Code Llama 34B', vram_mb: 20000, shard: true },
+                    { id: 'phi-3-mini', name: 'Phi-3 Mini', vram_mb: 4000, shard: false }
+                ]
+            };
+        }
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // DATA GENERATION FROM UDT SCHEMAS + REGISTRY
+        // ═══════════════════════════════════════════════════════════════════════
+        function createGPUFromUDT(idx, overrides = {}) {
+            const vramTotal = overrides.vram_total || (24000 + Math.floor(Math.random() * 3) * 24000);
+            return {
+                h: H(idx),
+                idx: idx,
+                name: overrides.name || ['NVIDIA RTX 4090', 'NVIDIA RTX 4080', 'NVIDIA A100', 'NVIDIA RTX 3090'][idx % 4],
+                state: overrides.state ?? [ST.READY, ST.BUSY, ST.READY, ST.BUSY][idx % 4],
+                temp: overrides.temp ?? (45 + Math.floor(Math.random() * 30)),
+                pwr: overrides.pwr ?? (150 + Math.floor(Math.random() * 200)),
+                pwr_cap: overrides.pwr_cap ?? 450,
+                vram_used: overrides.vram_used ?? Math.floor(Math.random() * vramTotal * 0.7),
+                vram_total: vramTotal,
+                util: overrides.util ?? Math.floor(Math.random() * 100),
+                models: overrides.models ?? [],
+                tag: makeTag(UDT.GPU.tag_prefix, idx, 'State')
+            };
+        }
+
+        function createModelFromUDT(name, vram, shard = true) {
+            return {
+                h: M(name),
+                name: name,
+                vram: vram,
+                shard: shard,
+                on_gpus: [],
+                req_cnt: Math.floor(Math.random() * 1000),
+                tag: `${UDT.Model.tag_prefix}_${name.replace(/[^a-zA-Z0-9]/g, '_')}`
+            };
+        }
+
+        function createRequestFromUDT(model_h, priority = 0) {
+            return {
+                h: R(model_h),
+                model_h: model_h,
+                state: priority === 0 ? RS.PROCESSING : RS.QUEUED,
+                priority: priority,
+                queued_at: new Date(Date.now() - priority * 30000).toISOString(),
+                tok_in: 0,
+                tok_out: 0,
+                tag: makeTag(UDT.Request.tag_prefix, '', 'State')
+            };
+        }
+
+        function createAlarmFromUDT(source_tag, cls, message, active = true) {
+            return {
+                h: H(source_tag + Date.now()),
+                tag: source_tag,
+                class: cls,
+                message: message,
+                t_raised: new Date(Date.now() - Math.random() * 600000).toISOString(),
+                t_ack: null,
+                t_clear: active ? null : new Date().toISOString(),
+                active: active
+            };
+        }
+
+        // Generate cluster data from UDT schemas + registry
+        function generateDataFromUDT() {
+            // Create GPUs from schema
+            const gpuCount = clientGPU ? 3 : 4;
             const gpus = [];
 
-            for (let i = 0; i < numGpus; i++) {
-                const vramTotal = 24000 + Math.floor(Math.random() * 4) * 24000;
-                gpus.push({
-                    h: 'gpu' + String(i).padStart(2, '0') + 'xx',
-                    idx: i,
-                    name: gpuNames[i % gpuNames.length],
-                    state: states[i % states.length],
-                    temp: 45 + Math.floor(Math.random() * 30),
-                    pwr: 150 + Math.floor(Math.random() * 200),
-                    pwr_cap: 450,
-                    vram_used: Math.floor(Math.random() * vramTotal * 0.8),
-                    vram_total: vramTotal,
-                    util: Math.floor(Math.random() * 100),
-                    models: i < 3 ? [models[i % models.length].name] : []
+            for (let i = 0; i < gpuCount; i++) {
+                gpus.push(createGPUFromUDT(i));
+            }
+
+            // Add client GPU if detected
+            if (clientGPU) {
+                gpus.unshift({
+                    ...clientGPU,
+                    tag: makeTag(UDT.GPU.tag_prefix, 'CL', 'State'),
+                    state: ST.READY,
+                    models: []
                 });
             }
 
-            const loadedModels = models.slice(0, 3).map((m, i) => ({
-                m: m.name,
-                h: 'mdl' + String(i).padStart(2, '0') + 'yy',
-                vram: m.vram,
-                gpus: [gpus[i % gpus.length].h],
-                req_cnt: Math.floor(Math.random() * 1000)
-            }));
+            // Create models from registry (or fallback)
+            const registryModels = modelRegistry?.models || [];
+            const modelDefs = registryModels.length > 0
+                ? registryModels.map(m => ({ id: m.id, name: m.name || m.id, vram: m.vram_mb, shard: m.shard }))
+                : [
+                    { id: 'llama-3-70b', name: 'Llama 3 70B', vram: 42000, shard: true },
+                    { id: 'mistral-7b', name: 'Mistral 7B', vram: 8000, shard: false },
+                    { id: 'codellama-34b', name: 'Code Llama 34B', vram: 20000, shard: true },
+                    { id: 'phi-3-mini', name: 'Phi-3 Mini', vram: 4000, shard: false }
+                ];
 
-            const queue = Array.from({ length: 5 }, (_, i) => ({
-                h: 'req' + String(i).padStart(2, '0') + 'zz',
-                model: models[i % models.length].name,
-                state: i === 0 ? 'PROCESSING' : 'QUEUED',
-                priority: i,
-                queued_at: new Date(Date.now() - i * 30000).toISOString()
-            }));
+            const models = modelDefs.slice(0, 3).map((m, i) => {
+                const model = createModelFromUDT(m.id, m.vram, m.shard);
+                model.display_name = m.name;
+                if (i < gpus.length) {
+                    model.on_gpus = [gpus[i].h];
+                    gpus[i].models = [model.h];
+                }
+                return model;
+            });
 
+            // Create requests from registry models
+            const queue = modelDefs.slice(0, 4).map((m, i) =>
+                createRequestFromUDT(M(m.id), i)
+            );
+
+            // Create alarms from schema
             const alarms = [
-                { class: 'WARNING', source: gpus[0]?.h || 'gpu00', msg: 'Temperature approaching threshold (78°C)', ts: new Date(Date.now() - 300000).toISOString(), active: true },
-                { class: 'INFO', source: 'router', msg: 'Model llama-3-70b loaded on gpu00', ts: new Date(Date.now() - 600000).toISOString(), active: false }
+                createAlarmFromUDT(
+                    makeTag(UDT.GPU.tag_prefix, 0, 'Temp'),
+                    'MED',
+                    `Temperature approaching threshold (${gpus[0]?.temp || 78}°C)`,
+                    true
+                ),
+                createAlarmFromUDT(
+                    `${UDT.Model.tag_prefix}_LDR_Active`,
+                    'LOW',
+                    `Model ${models[0]?.name || 'llama-3-70b'} loaded successfully`,
+                    false
+                )
             ];
 
             return {
                 gpus,
-                models: loadedModels,
+                models,
                 queue,
                 alarms,
                 stats: {
                     gpu_count: gpus.length,
-                    model_count: loadedModels.length,
+                    model_count: models.length,
                     queue_depth: queue.length,
                     active_alarms: alarms.filter(a => a.active).length,
                     uptime_sec: 3600 + Math.floor(Math.random() * 86400)
@@ -549,33 +603,138 @@
             };
         }
 
-        // State
+        // ═══════════════════════════════════════════════════════════════════════
+        // RENDER FUNCTIONS
+        // ═══════════════════════════════════════════════════════════════════════
         let demoMode = true;
         let currentView = 'overview';
-        let data = generateDemoData();
+        let data = { gpus: [], models: [], queue: [], alarms: [], stats: {} };
 
-        // Navigation
-        document.querySelectorAll('nav a').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const view = link.dataset.view;
-                document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-                document.getElementById('view-' + view).classList.add('active');
-                currentView = view;
-            });
-        });
+        function getProgressClass(percent) {
+            if (percent < 50) return 'low';
+            if (percent < 80) return 'medium';
+            return 'high';
+        }
 
-        // Demo toggle
-        document.getElementById('demo-toggle').addEventListener('click', () => {
-            demoMode = !demoMode;
-            updateDemoUI();
-            if (demoMode) {
-                data = generateDemoData();
-                render();
+        function formatUptime(seconds) {
+            const days = Math.floor(seconds / 86400);
+            const hours = Math.floor((seconds % 86400) / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            if (days > 0) return `${days}d ${hours}h`;
+            if (hours > 0) return `${hours}h ${minutes}m`;
+            return `${minutes}m`;
+        }
+
+        function renderGpuCard(gpu) {
+            const tempPct = gpu.temp !== null ? (gpu.temp / 90) * 100 : 0;
+            const vramPct = (gpu.vram_used / gpu.vram_total) * 100;
+            const stateName = ST_NAMES[gpu.state] || 'UNKNOWN';
+            const stateClass = stateName.toLowerCase();
+
+            return `
+                <div class="gpu-card" ${gpu.isClient ? 'style="border-color: var(--accent);"' : ''}>
+                    <div class="gpu-header">
+                        <span class="gpu-name">${gpu.isClient ? '🎮 ' : ''}${gpu.name}</span>
+                        <span class="gpu-state ${stateClass}">${stateName}</span>
+                    </div>
+                    <div class="gpu-tag">${gpu.tag || makeTag(UDT.GPU.tag_prefix, gpu.idx, 'State')}</div>
+                    <div class="gpu-stats">
+                        <div class="gpu-stat">
+                            <span class="gpu-stat-label">Temperature</span>
+                            <span class="gpu-stat-value">${gpu.temp !== null ? gpu.temp + '°C' : 'N/A'}</span>
+                            ${gpu.temp !== null ? `<div class="progress-bar"><div class="progress-fill ${getProgressClass(tempPct)}" style="width:${tempPct}%"></div></div>` : ''}
+                        </div>
+                        <div class="gpu-stat">
+                            <span class="gpu-stat-label">VRAM</span>
+                            <span class="gpu-stat-value">${(gpu.vram_used/1000).toFixed(1)}/${(gpu.vram_total/1000).toFixed(0)} GB</span>
+                            <div class="progress-bar"><div class="progress-fill ${getProgressClass(vramPct)}" style="width:${vramPct}%"></div></div>
+                        </div>
+                        <div class="gpu-stat">
+                            <span class="gpu-stat-label">Power</span>
+                            <span class="gpu-stat-value">${gpu.pwr !== null ? `${gpu.pwr}W / ${gpu.pwr_cap}W` : 'N/A'}</span>
+                        </div>
+                        <div class="gpu-stat">
+                            <span class="gpu-stat-label">Utilization</span>
+                            <span class="gpu-stat-value">${gpu.util !== null ? gpu.util + '%' : 'N/A'}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSchemas() {
+            const container = document.getElementById('schemas-container');
+            container.innerHTML = Object.entries(UDT).map(([key, udt]) => `
+                <div class="stat-card" style="margin-bottom: 1rem;">
+                    <h3 style="color: var(--accent); margin-bottom: 0.5rem;">${udt.name}</h3>
+                    <div class="gpu-tag">${udt.tag_prefix}_*</div>
+                    <div class="udt-schema">
+                        <pre>${Object.entries(udt.fields).map(([field, def]) =>
+                            `${field.padEnd(12)} : ${def.type.padEnd(16)} // ${def.desc}${def.unit ? ' [' + def.unit + ']' : ''}`
+                        ).join('\n')}</pre>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function render() {
+            // Stats with tags
+            document.getElementById('stat-gpus').textContent = data.stats.gpu_count;
+            document.getElementById('stat-models').textContent = data.stats.model_count;
+            document.getElementById('stat-queue').textContent = data.stats.queue_depth;
+            document.getElementById('stat-alarms').textContent = data.stats.active_alarms;
+            document.getElementById('uptime').textContent = 'Uptime: ' + formatUptime(data.stats.uptime_sec || 0);
+
+            // Alarm badge
+            const badge = document.getElementById('alarm-badge');
+            if (data.stats.active_alarms > 0) {
+                badge.style.display = 'block';
+                badge.textContent = data.stats.active_alarms;
+            } else {
+                badge.style.display = 'none';
             }
-        });
+
+            // GPU grids
+            const gpuHtml = data.gpus.map(renderGpuCard).join('');
+            document.getElementById('gpu-grid').innerHTML = gpuHtml;
+            document.getElementById('gpu-detail-grid').innerHTML = gpuHtml;
+
+            // Models table with UDT fields
+            document.getElementById('models-body').innerHTML = data.models.map(m => `
+                <tr>
+                    <td>${m.display_name || m.name}</td>
+                    <td class="model-hash">${m.h}</td>
+                    <td>${(m.vram/1000).toFixed(1)} GB</td>
+                    <td>${m.on_gpus.length}</td>
+                    <td>${m.req_cnt.toLocaleString()}</td>
+                </tr>
+            `).join('');
+
+            // Queue table with UDT fields
+            document.getElementById('queue-body').innerHTML = data.queue.map(r => `
+                <tr>
+                    <td class="model-hash">${r.h}</td>
+                    <td>${r.model_h}</td>
+                    <td><span class="gpu-state ${RS_NAMES[r.state]?.toLowerCase() || 'queued'}">${RS_NAMES[r.state] || 'QUEUED'}</span></td>
+                    <td>${r.priority}</td>
+                    <td>${new Date(r.queued_at).toLocaleTimeString()}</td>
+                </tr>
+            `).join('');
+
+            // Alarms table with tags
+            document.getElementById('alarms-body').innerHTML = data.alarms.map(a => `
+                <tr>
+                    <td><span class="gpu-state ${a.class === 'CRIT' ? 'error' : a.class === 'HIGH' ? 'throttle' : a.class === 'MED' ? 'throttle' : 'ready'}">${a.class}</span></td>
+                    <td class="model-hash" style="font-size: 0.75rem;">${a.tag}</td>
+                    <td>${a.message}</td>
+                    <td>${new Date(a.t_raised).toLocaleTimeString()}</td>
+                    <td>${a.active ? '🔴 Active' : '✅ Cleared'}</td>
+                </tr>
+            `).join('');
+
+            // Render schemas
+            renderSchemas();
+        }
 
         function updateDemoUI() {
             const btn = document.getElementById('demo-toggle');
@@ -593,133 +752,64 @@
             }
         }
 
-        // Render functions
-        function getProgressClass(percent) {
-            if (percent < 50) return 'low';
-            if (percent < 80) return 'medium';
-            return 'high';
-        }
+        // ═══════════════════════════════════════════════════════════════════════
+        // INITIALIZATION
+        // ═══════════════════════════════════════════════════════════════════════
+        async function init() {
+            // Load model registry
+            modelRegistry = await loadModelRegistry();
+            console.log('Registry loaded:', modelRegistry.models.map(m => m.id));
 
-        function formatUptime(seconds) {
-            const days = Math.floor(seconds / 86400);
-            const hours = Math.floor((seconds % 86400) / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-            if (days > 0) return `${days}d ${hours}h`;
-            if (hours > 0) return `${hours}h ${minutes}m`;
-            return `${minutes}m`;
-        }
+            // Detect client GPU via WebGPU
+            await detectClientGPU();
 
-        function renderGpuCard(gpu) {
-            const tempPct = (gpu.temp / 90) * 100;
-            const vramPct = (gpu.vram_used / gpu.vram_total) * 100;
-            const stateClass = gpu.state.toLowerCase();
+            // Generate initial data from UDT schemas + registry
+            data = generateDataFromUDT();
+            render();
 
-            return `
-                <div class="gpu-card">
-                    <div class="gpu-header">
-                        <span class="gpu-name">${gpu.name}</span>
-                        <span class="gpu-state ${stateClass}">${gpu.state}</span>
-                    </div>
-                    <div class="gpu-stats">
-                        <div class="gpu-stat">
-                            <span class="gpu-stat-label">Temperature</span>
-                            <span class="gpu-stat-value">${gpu.temp}°C</span>
-                            <div class="progress-bar">
-                                <div class="progress-fill ${getProgressClass(tempPct)}" style="width:${tempPct}%"></div>
-                            </div>
-                        </div>
-                        <div class="gpu-stat">
-                            <span class="gpu-stat-label">VRAM</span>
-                            <span class="gpu-stat-value">${(gpu.vram_used/1000).toFixed(1)}/${(gpu.vram_total/1000).toFixed(0)} GB</span>
-                            <div class="progress-bar">
-                                <div class="progress-fill ${getProgressClass(vramPct)}" style="width:${vramPct}%"></div>
-                            </div>
-                        </div>
-                        <div class="gpu-stat">
-                            <span class="gpu-stat-label">Power</span>
-                            <span class="gpu-stat-value">${gpu.pwr}W / ${gpu.pwr_cap}W</span>
-                        </div>
-                        <div class="gpu-stat">
-                            <span class="gpu-stat-label">Utilization</span>
-                            <span class="gpu-stat-value">${gpu.util}%</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function render() {
-            // Stats
-            document.getElementById('stat-gpus').textContent = data.stats.gpu_count;
-            document.getElementById('stat-models').textContent = data.stats.model_count;
-            document.getElementById('stat-queue').textContent = data.stats.queue_depth;
-            document.getElementById('stat-alarms').textContent = data.stats.active_alarms;
-            document.getElementById('uptime').textContent = 'Uptime: ' + formatUptime(data.stats.uptime_sec);
-
-            // Alarm badge
-            const badge = document.getElementById('alarm-badge');
-            if (data.stats.active_alarms > 0) {
-                badge.style.display = 'block';
-                badge.textContent = data.stats.active_alarms;
-            } else {
-                badge.style.display = 'none';
-            }
-
-            // GPU grids
-            const gpuHtml = data.gpus.map(renderGpuCard).join('');
-            document.getElementById('gpu-grid').innerHTML = gpuHtml;
-            document.getElementById('gpu-detail-grid').innerHTML = gpuHtml;
-
-            // Models table
-            document.getElementById('models-body').innerHTML = data.models.map(m => `
-                <tr>
-                    <td>${m.m}</td>
-                    <td class="model-hash">${m.h}</td>
-                    <td>${(m.vram/1000).toFixed(1)} GB</td>
-                    <td>${m.gpus.length}</td>
-                    <td>${m.req_cnt.toLocaleString()}</td>
-                </tr>
-            `).join('');
-
-            // Queue table
-            document.getElementById('queue-body').innerHTML = data.queue.map(r => `
-                <tr>
-                    <td class="model-hash">${r.h}</td>
-                    <td>${r.model}</td>
-                    <td><span class="gpu-state ${r.state === 'PROCESSING' ? 'busy' : 'ready'}">${r.state}</span></td>
-                    <td>${r.priority}</td>
-                    <td>${new Date(r.queued_at).toLocaleTimeString()}</td>
-                </tr>
-            `).join('');
-
-            // Alarms table
-            document.getElementById('alarms-body').innerHTML = data.alarms.map(a => `
-                <tr>
-                    <td><span class="gpu-state ${a.class === 'WARNING' ? 'throttle' : 'ready'}">${a.class}</span></td>
-                    <td class="model-hash">${a.source}</td>
-                    <td>${a.msg}</td>
-                    <td>${new Date(a.ts).toLocaleTimeString()}</td>
-                    <td>${a.active ? '🔴 Active' : '✅ Cleared'}</td>
-                </tr>
-            `).join('');
-        }
-
-        // Initial render
-        render();
-
-        // Refresh demo data periodically
-        setInterval(() => {
-            if (demoMode) {
-                // Update some values slightly
-                data.gpus.forEach(gpu => {
-                    gpu.temp = Math.max(40, Math.min(85, gpu.temp + (Math.random() - 0.5) * 5));
-                    gpu.util = Math.max(0, Math.min(100, gpu.util + (Math.random() - 0.5) * 20));
-                    gpu.vram_used = Math.max(0, Math.min(gpu.vram_total, gpu.vram_used + (Math.random() - 0.5) * 1000));
+            // Navigation
+            document.querySelectorAll('nav a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const view = link.dataset.view;
+                    document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+                    document.getElementById('view-' + view).classList.add('active');
+                    currentView = view;
                 });
-                data.stats.uptime_sec += 5;
-                render();
-            }
-        }, 5000);
+            });
+
+            // Demo toggle
+            document.getElementById('demo-toggle').addEventListener('click', () => {
+                demoMode = !demoMode;
+                updateDemoUI();
+                if (demoMode) {
+                    data = generateDataFromUDT();
+                    render();
+                }
+            });
+
+            // Periodic updates
+            setInterval(() => {
+                if (demoMode) {
+                    data.gpus.forEach(gpu => {
+                        if (gpu.temp !== null) {
+                            gpu.temp = Math.max(40, Math.min(85, gpu.temp + (Math.random() - 0.5) * 5));
+                        }
+                        if (gpu.util !== null) {
+                            gpu.util = Math.max(0, Math.min(100, gpu.util + (Math.random() - 0.5) * 20));
+                        }
+                        gpu.vram_used = Math.max(0, Math.min(gpu.vram_total, gpu.vram_used + (Math.random() - 0.5) * 1000));
+                    });
+                    data.stats.uptime_sec += 5;
+                    render();
+                }
+            }, 5000);
+        }
+
+        // Start
+        init();
     </script>
 </body>
 </html>

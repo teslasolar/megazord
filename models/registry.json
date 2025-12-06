@@ -1,0 +1,98 @@
+{
+  "$schema": "./registry.schema.json",
+  "version": "1.0.0",
+  "tag_prefix": "GPUCluster_MDL",
+  "models": [
+    {
+      "id": "llama-3-70b",
+      "name": "Llama 3 70B",
+      "family": "llama",
+      "params": "70B",
+      "vram_mb": 42000,
+      "quant": "fp16",
+      "shard": true,
+      "context_len": 8192,
+      "source": "meta-llama/Meta-Llama-3-70B",
+      "path": null,
+      "loaded": false
+    },
+    {
+      "id": "llama-3-8b",
+      "name": "Llama 3 8B",
+      "family": "llama",
+      "params": "8B",
+      "vram_mb": 8000,
+      "quant": "fp16",
+      "shard": false,
+      "context_len": 8192,
+      "source": "meta-llama/Meta-Llama-3-8B",
+      "path": null,
+      "loaded": false
+    },
+    {
+      "id": "mistral-7b",
+      "name": "Mistral 7B",
+      "family": "mistral",
+      "params": "7B",
+      "vram_mb": 8000,
+      "quant": "fp16",
+      "shard": false,
+      "context_len": 32768,
+      "source": "mistralai/Mistral-7B-v0.1",
+      "path": null,
+      "loaded": false
+    },
+    {
+      "id": "codellama-34b",
+      "name": "Code Llama 34B",
+      "family": "codellama",
+      "params": "34B",
+      "vram_mb": 20000,
+      "quant": "fp16",
+      "shard": true,
+      "context_len": 16384,
+      "source": "codellama/CodeLlama-34b-hf",
+      "path": null,
+      "loaded": false
+    },
+    {
+      "id": "phi-3-mini",
+      "name": "Phi-3 Mini",
+      "family": "phi",
+      "params": "3.8B",
+      "vram_mb": 4000,
+      "quant": "fp16",
+      "shard": false,
+      "context_len": 4096,
+      "source": "microsoft/Phi-3-mini-4k-instruct",
+      "path": null,
+      "loaded": false
+    },
+    {
+      "id": "qwen2-72b",
+      "name": "Qwen2 72B",
+      "family": "qwen",
+      "params": "72B",
+      "vram_mb": 45000,
+      "quant": "fp16",
+      "shard": true,
+      "context_len": 32768,
+      "source": "Qwen/Qwen2-72B",
+      "path": null,
+      "loaded": false
+    },
+    {
+      "id": "deepseek-coder-33b",
+      "name": "DeepSeek Coder 33B",
+      "family": "deepseek",
+      "params": "33B",
+      "vram_mb": 20000,
+      "quant": "fp16",
+      "shard": true,
+      "context_len": 16384,
+      "source": "deepseek-ai/deepseek-coder-33b-instruct",
+      "path": null,
+      "loaded": false
+    }
+  ]
+}
